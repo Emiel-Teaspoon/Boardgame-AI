@@ -15,11 +15,12 @@ public class Node {
     private NodeState state;
     private Board board;
 
-    public Node(int x, int y, Board board) {
+    public Node(int x, int y, Board board, int weight) {
         this.x = x;
         this.y = y;
         this.board = board;
         this.state = NodeState.EMPTY;
+        this.weight = weight;
     }
 
     public int getY() {
@@ -90,5 +91,10 @@ public class Node {
 
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf("ABCDEFGH".charAt(x)) + (y + 1);
     }
 }

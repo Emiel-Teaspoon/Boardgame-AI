@@ -6,6 +6,7 @@ import game.utils.Move;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class BaseAI extends AbstractAI {
 
@@ -34,15 +35,25 @@ public class BaseAI extends AbstractAI {
 
     @Override
     public Move getBestPossibleMove() {
-        Move bestMove = null;
+        List<Move> bestMoves = new ArrayList<>();
         int highestScore = 0;
+        Random rand = new Random();
         for (Move move : possibleMoves) {
             if(move.getScore() > highestScore) {
+                bestMoves.clear();
                 highestScore = move.getScore();
-                bestMove = move;
+                bestMoves.add(move);
+            }
+            else if (move.getScore() == highestScore) {
+                bestMoves.add(move);
             }
         }
-        return bestMove;
+        if(!bestMoves.isEmpty()) {
+            return bestMoves.get(rand.nextInt(bestMoves.size()));
+        }
+        else {
+            return null;
+        }
     }
 
     public void setPossibleMoves(List<Move> possibleMoves) {

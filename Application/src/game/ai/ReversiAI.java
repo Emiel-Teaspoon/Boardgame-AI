@@ -6,6 +6,7 @@ import game.utils.Move;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ReversiAI extends BaseAI {
 
@@ -14,10 +15,12 @@ public class ReversiAI extends BaseAI {
     List<Node> checked;
     List<Node> extraChecked;
 
-    public enum Dir { N, NE, E, SE, S, SW, W, NW }
+    public enum Difficulty { SLAVE, MEDIUM, HARD, EXPERT, MASTER, UNBEATABLE }
+    Difficulty difficulty;
 
-    public ReversiAI(Board board, Node.NodeState color) {
+    public ReversiAI(Board board, Node.NodeState color, Difficulty difficulty) {
         super(board, color);
+        this.difficulty = difficulty;
     }
 
     @Override
@@ -58,14 +61,56 @@ public class ReversiAI extends BaseAI {
                             run = false;
                         }
                         else {
-                            checked.add(nextToCheck);
+                            if(!checked.contains(nextToCheck)) {
+                                checked.add(nextToCheck);
+                            }
                             if(!nextToCheck.isOccupied()) {
-                                Move possibleMove = new Move(this, checked, nextToCheck);
-                                moves.add(possibleMove);
                                 //TODO backtracking
+                                for (Node clearNodeNeighbour: nextToCheck.getNeighbourNodes()) {
+                                    if (clearNodeNeighbour.isEnemy(getColor()) && !checked.contains(clearNodeNeighbour)) {
+                                        extraChecked.clear();
+                                        checkingDir = Node.getDirection(nextToCheck, clearNodeNeighbour);
+                                        if(!extraChecked.contains(clearNodeNeighbour)) {
+                                            extraChecked.add(clearNodeNeighbour);
+                                        }
+                                        Node nextToCheckExtra = clearNodeNeighbour;
+                                        boolean runNext = true;
+                                        while (runNext) {
+                                            nextToCheckExtra = Node.getNextNodeInDir(board, nextToCheckExtra, checkingDir);
+                                            if(nextToCheckExtra == null) {
+                                                runNext = false;
+                                                extraChecked = new ArrayList<>();
+                                                continue;
+                                            }
+                                            if(nextToCheckExtra.isOccupied()){
+                                                if(nextToCheckExtra.isEnemy(getColor())) {
+                                                    if(!extraChecked.contains(nextToCheckExtra)) {
+                                                        extraChecked.add(nextToCheckExtra);
+                                                    }
+                                                }
+                                                else {
+                                                    runNext = false;
+                                                    checked.addAll(extraChecked);
+                                                }
+                                            }
+                                            else {
+                                                runNext = false;
+                                                extraChecked = new ArrayList<>();
+                                            }
+                                        }
+                                    }
+                                }
 
-
-
+                                Move possibleMove = new Move(this, checked, nextToCheck);
+                                boolean add = true;
+                                for (Move move: moves) {
+                                    if(move.getTargetNode().equals(nextToCheck)) {
+                                        add = false;
+                                    }
+                                }
+                                if(add) {
+                                    moves.add(possibleMove);
+                                }
                                 run = false;
                             }
                         }
@@ -73,16 +118,19 @@ public class ReversiAI extends BaseAI {
                 }
             }
         }
-
-//        setPossibleMoves(moves);
-
         return moves;
     }
 
     @Override
     public Move doMove() {
-        setPossibleMoves(getPossibleMoves());
+        List<Move> moves = getPossibleMoves();
+        for (Move move : moves) {
+            System.out.println("Possible " + move.toString());
+        }
+
+        setPossibleMoves(moves);
         if(getBestPossibleMove() != null) {
+            System.out.println("\n" + getBestPossibleMove());
             board.displayMove(getBestPossibleMove());
         }
         else {
@@ -90,4 +138,34 @@ public class ReversiAI extends BaseAI {
         }
         return super.doMove();
     }
+
+    @Override
+    public Move getBestPossibleMove() {
+        switch (difficulty) {
+            case SLAVE:
+                if(getPossibleMoves().size() > 0) {
+                    return getPossibleMoves().get(new Random().nextInt(getPossibleMoves().size()));
+                }
+                return null;
+            case MEDIUM:
+
+                break;
+            case HARD:
+
+                break;
+            case EXPERT:
+
+                break;
+            case MASTER:
+
+                break;
+            case UNBEATABLE:
+                return super.getBestPossibleMove();
+        }
+        return super.getBestPossibleMove();
+    }
+//
+//    private Move getDifficultyLevelMove(Difficulty difficulty) {
+//
+//    }
 }

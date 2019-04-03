@@ -17,7 +17,12 @@ public class Board {
 
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
-                nodes.add(new Node(x, y,  this));
+                if (x == 0 && y == 0 || x == sizeX -1 && y == sizeY - 1 || x == 0 && y == sizeY - 1 || x == sizeX -1 && y == 0) {
+                    nodes.add(new Node(x, y,this, 10));
+                }
+                else {
+                    nodes.add(new Node(x, y, this, 0));
+                }
             }
         }
 
@@ -61,7 +66,10 @@ public class Board {
         int i = 0;
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
-                System.out.print(nodes.get(i).getGraphic() + " ");
+                if(y == 0 && x == 0) {
+                    System.out.println("\n    A B C D E F G H\n    ---------------");
+                }
+                System.out.print((x == 0 ? (y + 1) + " | " : "") + nodes.get(i).getGraphic() + " ");
                 i++;
             }
             System.out.print("\n");

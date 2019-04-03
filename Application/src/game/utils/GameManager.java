@@ -10,38 +10,31 @@ public class GameManager {
     private List<Player> players;
     private int maxTurnTime;
     private Board board;
+    private int whiteScore = 0;
 
     public GameManager(int boardSizeX, int boardSizeY, int maxTurnTime) {
-        this.board = new Board(boardSizeX, boardSizeY);
-        this.maxTurnTime = maxTurnTime;
-        this.players = new ArrayList<>();
+//        while(whiteScore < 60) {
+            this.board = new Board(boardSizeX, boardSizeY);
+            this.maxTurnTime = maxTurnTime;
+            this.players = new ArrayList<>();
 
-        ReversiAI white = new ReversiAI(board, Node.NodeState.WHITE);
-        ReversiAI black = new ReversiAI(board, Node.NodeState.BLACK);
+            ReversiAI white = new ReversiAI(board, Node.NodeState.WHITE, ReversiAI.Difficulty.UNBEATABLE);
+            ReversiAI black = new ReversiAI(board, Node.NodeState.BLACK, ReversiAI.Difficulty.SLAVE);
 
-        this.players.add(white);
-        this.players.add(black);
+            this.players.add(white);
+            this.players.add(black);
 
-//        white.doMove();
-
-//        try {
-            for(int i = 0; i < 30; i++) {
-//                Thread.sleep(1000);
+            for (int i = 0; i < 40; i++) {
                 System.out.println("White turn");
                 white.doMove();
 
                 setScores(white, black);
-//                Thread.sleep(1000);
                 System.out.println("Black turn");
                 black.doMove();
                 setScores(white, black);
             }
+            whiteScore = white.getScore();
 //        }
-//        catch (InterruptedException e) {
-//
-//        }
-
-
     }
 
     void setScores(Player white, Player black) {
@@ -62,10 +55,7 @@ public class GameManager {
 
         System.out.println("White points: " + white.getScore());
         System.out.println("Black points: " + black.getScore());
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
+        System.out.println("___________________________________________________\n");
         System.out.println("\n");
     }
 
