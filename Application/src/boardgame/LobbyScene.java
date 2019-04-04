@@ -27,6 +27,7 @@ public class LobbyScene {
 
         Pane gameSelectionLayout = new Pane();
         ComboBox<String> gameListing = new ComboBox<>();
+        gameListing.getSelectionModel().selectFirst();
 
         gameListing.setItems(model.getGameList());
         gameListing.getSelectionModel().selectFirst();
@@ -38,7 +39,12 @@ public class LobbyScene {
         buttonLayout.add(backToStartButton, 0, 0);
         buttonLayout.add(startGameButton, 0, 1);
         backToStartButton.setOnAction(e -> controller.switchScene("StartScene", "Startscherm"));
-        startGameButton.setOnAction(e -> controller.switchScene("GameScene", gameListing.getValue()));
+        startGameButton.setOnAction(e -> {
+            model.setSelectedGame(gameListing.getValue());
+            model.setChosenOpponent(playerOverview.getSelectionModel().getSelectedItem());
+            controller.prepareGameScene();
+            controller.switchScene("GameScene", model.getSelectedGame());
+        });
 
         mainLayout.getChildren().addAll(playerOverviewLayout, gameSelectionLayout, buttonLayout);
 

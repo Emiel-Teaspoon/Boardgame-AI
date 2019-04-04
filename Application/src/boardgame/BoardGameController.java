@@ -7,27 +7,55 @@ import java.util.HashMap;
 
 public class BoardGameController {
 
+    private Stage primaryStage;
+
     private StartModel startModel;
     private SettingsModel settingsModel;
     private LobbyModel lobbyModel;
     private GameModel gameModel;
 
     private HashMap<String, Scene> scenes = new HashMap<>();
-    private Stage primaryStage;
+    private HashMap<String, Game> games = new HashMap<>();
+
 
     public BoardGameController() {
+        loadAvailableGames();
+
         startModel = new StartModel();
         settingsModel = new SettingsModel();
-        lobbyModel = new LobbyModel();
-        gameModel = new GameModel();
 
         StartScene startScene = new StartScene(this, startModel);
-        LobbyScene lobbyScene = new LobbyScene(this, lobbyModel);
-        GameScene gameScene = new GameScene(this, gameModel);
 
         scenes.put("StartScene", startScene.getScene());
-        scenes.put("LobbyScene", lobbyScene.getScene());
-        scenes.put("GameScene", gameScene.getScene());
+    }
+
+    private void loadAvailableGames() {
+        games.put("Reversi", new GameModuleReversi());
+    }
+
+    public void createLobbyScene() {
+        if (lobbyModel == null) {
+            lobbyModel = new LobbyModel();
+            LobbyScene lobbyScene = new LobbyScene(this, lobbyModel);
+            scenes.put("LobbyScene", lobbyScene.getScene());
+        }
+    }
+
+    /**
+     * Creates the game model and scene. Also fill the gameModel with the necessary information.
+     */
+    public void prepareGameScene() {
+        if (gameModel == null) {
+            gameModel = new GameModel();
+            gameModel.setPlayerOne(startModel.getName());
+            gameModel.setCurrentGame(games.get(lobbyModel.getSelectedGame()));
+            gameModel.setPlayerTwo(lobbyModel.getChosenOpponent());
+            GameScene gameScene = new GameScene(this, gameModel);
+            scenes.put("GameScene", gameScene.getScene());
+        }
+        gameModel.setPlayerOne(startModel.getName());
+        gameModel.setCurrentGame(games.get(lobbyModel.getSelectedGame()));
+        gameModel.setPlayerTwo(lobbyModel.getChosenOpponent());
     }
 
     public boolean verifyGateway(String currentInput) {
@@ -46,10 +74,7 @@ public class BoardGameController {
 
     public void setStage(Stage stage) {this.primaryStage = stage;}
 
-    public void updateName(String name) {startModel.setName(name);}
-
     public void updateIPAdress(String IP) {settingsModel.setIPAddress(IP);}
 
     public void updateGateway(String gateway) {settingsModel.setGateway(Integer.parseInt(gateway));}
-
 }

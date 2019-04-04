@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
 public class StartScene {
 
     private BoardGameController controller;
-    private StartModel startModel;
+    private StartModel model;
 
     private GridPane LoginGridPane;
     private TextField nameField;
@@ -18,9 +18,9 @@ public class StartScene {
     private Button onlinePlayButton;
     private Button settingsButton;
 
-    public StartScene(BoardGameController controller, StartModel startModel) {
+    public StartScene(BoardGameController controller, StartModel model) {
         this.controller = controller;
-        this.startModel = startModel;
+        this.model = model;
     }
 
     public Scene getScene() {
@@ -58,8 +58,12 @@ public class StartScene {
 
     private void createActionListeners() {
         SettingsWindow settingsWindow = new SettingsWindow(controller);
-        localPlayButton.setOnAction(e -> controller.updateName(nameField.getText()));
-        onlinePlayButton.setOnAction(e -> controller.switchScene("LobbyScene", "Lobby"));
+        localPlayButton.setOnAction(e -> model.setName(nameField.getText()));
+        onlinePlayButton.setOnAction(e -> {
+            model.setName(nameField.getText());
+            controller.createLobbyScene();
+            controller.switchScene("LobbyScene", "Lobby");
+        });
         settingsButton.setOnAction(e -> settingsWindow.display());
     }
 
