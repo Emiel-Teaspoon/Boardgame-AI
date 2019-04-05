@@ -1,5 +1,6 @@
 package boardgame;
 
+import GameModuleReversi.GameModuleReversi;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -19,8 +20,6 @@ public class BoardGameController {
 
 
     public BoardGameController() {
-        loadAvailableGames();
-
         startModel = new StartModel();
         settingsModel = new SettingsModel();
 
@@ -29,7 +28,7 @@ public class BoardGameController {
         scenes.put("StartScene", startScene.getScene());
     }
 
-    private void loadAvailableGames() {
+    public void loadAvailableGames() {
         games.put("Reversi", new GameModuleReversi());
     }
 
