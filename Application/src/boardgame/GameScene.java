@@ -26,8 +26,7 @@ public class GameScene {
         Pane gameBoardLayout = new Pane();
 
         Game currentGame = model.getCurrentGame();
-        gameBoardLayout.getChildren().add(currentGame.drawGameBoard());
-
+        gameBoardLayout.getChildren().add(currentGame.startGame());
 
         Label playerOneName = new Label(model.getPlayerOne());
         Label playerTwoName = new Label(model.getPlayerTwo());
@@ -48,7 +47,6 @@ public class GameScene {
         layout.setLeft(gameBoardLayout);
         layout.setRight(sideBar);
 
-        //layout.getChildren().addAll(gameBoardLayout, sideBar);
         return new Scene(layout, 800, 800);
     }
 

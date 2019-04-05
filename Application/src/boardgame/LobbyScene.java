@@ -42,6 +42,7 @@ public class LobbyScene {
         startGameButton.setOnAction(e -> {
             model.setSelectedGame(gameListing.getValue());
             model.setChosenOpponent(playerOverview.getSelectionModel().getSelectedItem());
+            controller.loadAvailableGames();
             controller.prepareGameScene();
             controller.switchScene("GameScene", model.getSelectedGame());
         });
