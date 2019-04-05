@@ -35,6 +35,11 @@ public class GameModuleReversi implements Game{
         return gameBoard;
     }
 
+    @Override
+    public Pane startGame() {
+        return null;
+    }
+
     public class Tile extends StackPane {
         private final Circle circle = new Circle(TILE_SIZE*0.45);
         private Color circleColor;

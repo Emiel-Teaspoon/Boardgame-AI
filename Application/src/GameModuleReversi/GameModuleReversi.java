@@ -12,7 +12,6 @@ public class GameModuleReversi implements Game{
 
     public GameModuleReversi() {
         gameBoard = new GameBoard(80, 8, 8);
-        startGame();
     }
 
     @Override
