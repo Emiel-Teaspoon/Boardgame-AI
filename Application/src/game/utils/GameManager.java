@@ -2,6 +2,9 @@ package game.utils;
 
 import game.ai.ReversiAI;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,7 @@ public class GameManager {
     private int whiteScore = 0;
 
     public GameManager(int boardSizeX, int boardSizeY, int maxTurnTime) {
-//        while(whiteScore < 60) {
+        while(whiteScore < 63) {
             this.board = new Board(boardSizeX, boardSizeY);
             this.maxTurnTime = maxTurnTime;
             this.players = new ArrayList<>();
@@ -24,17 +27,31 @@ public class GameManager {
             this.players.add(white);
             this.players.add(black);
 
-            for (int i = 0; i < 40; i++) {
-                System.out.println("White turn");
-                white.doMove();
+//            try {
+                for (int i = 0; i < 30; i++) {
+//                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                    System.out.println("White turn");
 
-                setScores(white, black);
-                System.out.println("Black turn");
-                black.doMove();
-                setScores(white, black);
-            }
+//                    boolean didMove = false;
+//                    while(!didMove) {
+//                        System.out.println("Type move: ");
+//                        String s = br.readLine();
+//                        didMove = white.doMove(s);
+//                    }
+
+//                    Thread.sleep(2500);
+                    white.doMove();
+                    setScores(white, black);
+                    System.out.println("Black turn");
+                    black.doMove();
+                    setScores(white, black);
+                }
+//            }
+//            catch (IOException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
             whiteScore = white.getScore();
-//        }
+        }
     }
 
     void setScores(Player white, Player black) {

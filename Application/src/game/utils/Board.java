@@ -39,6 +39,23 @@ public class Board {
         return nodes;
     }
 
+    public Node getNode(String node) {
+        int nodeNumber = 0;
+        if(node.length() != 2) {
+            return null;
+        }
+
+        if("ABCDEFGH".contains(String.valueOf(node.charAt(0)).toUpperCase())) {
+            nodeNumber = "ABCDEFGH".indexOf(String.valueOf(node.charAt(0)).toUpperCase());
+            nodeNumber += (8 * (Integer.parseInt(String.valueOf(node.charAt(1)))-1));
+        }
+        else {
+            nodeNumber = "ABCDEFGH".indexOf(String.valueOf(node.charAt(1)).toUpperCase());
+            nodeNumber += (8 * (Integer.parseInt(String.valueOf(node.charAt(0)))-1));
+        }
+        return getNode(nodeNumber);
+    }
+
     public void setNodeState(Node node, Node.NodeState newState)
     {
         nodes.get(nodes.indexOf(node)).setState(newState);

@@ -139,6 +139,24 @@ public class ReversiAI extends BaseAI {
         return super.doMove();
     }
 
+    public boolean doMove(String move) {
+        List<Node> targetNodes = new ArrayList<>();
+        List<Move> moves = getPossibleMoves();
+        Move selectedMove = null;
+        for (Move possibleMove : moves) {
+            targetNodes.add(possibleMove.getTargetNode());
+        }
+        if(targetNodes.contains(board.getNode(move))) {
+            selectedMove = moves.get(targetNodes.indexOf(board.getNode(move)));
+            board.displayMove(selectedMove);
+            return true;
+        }
+        else {
+            System.out.println("Invalid move");
+            return false;
+        }
+    }
+
     @Override
     public Move getBestPossibleMove() {
         switch (difficulty) {
