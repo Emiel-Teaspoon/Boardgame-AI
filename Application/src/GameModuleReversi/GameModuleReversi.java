@@ -3,9 +3,6 @@ package GameModuleReversi;
 import boardgame.Game;
 import javafx.scene.layout.Pane;
 
-
-// TODO zet gameboardDS om in key value pairs genummerd 0 tot 63
-
 public class GameModuleReversi implements Game{
 
     private final GameBoard gameBoard;

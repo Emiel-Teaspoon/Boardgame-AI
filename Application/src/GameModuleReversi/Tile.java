@@ -12,15 +12,18 @@ public class Tile extends StackPane {
     public enum TileState { EMPTY, WHITE, BLACK}
     private int x;
     private int y;
+    private int weight;
+
     private TileState state;
 
     private final Circle circle;
 
     private Color circleColor = Color.GREEN;
 
-    public Tile(int tileSize, int x, int y) {
+    public Tile(int tileSize, int x, int y, int weight) {
         this.x = x;
         this.y = y;
+        this.weight = weight;
 
         circle = new Circle(tileSize * 0.45);
         circle.fillProperty().setValue(circleColor);
@@ -38,11 +41,11 @@ public class Tile extends StackPane {
 
         setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                drawBlackPiece();
+                drawPiece(TileState.BLACK);
             }
 
             if (e.getButton() == MouseButton.SECONDARY) {
-                drawWhitePiece();
+                drawPiece(TileState.WHITE);
             }
 
             if (e.getButton() == MouseButton.MIDDLE) {
@@ -52,18 +55,18 @@ public class Tile extends StackPane {
         });
     }
 
-    public void drawBlackPiece() {
-        state = TileState.BLACK;
-        Color black = Color.BLACK;
-        circle.fillProperty().setValue(black);
-        circleColor = black;
-    }
-
-    public void drawWhitePiece() {
-        state = TileState.WHITE;
-        Color white = Color.WHITE;
-        circle.fillProperty().setValue(white);
-        circleColor = white;
+    public void drawPiece(TileState color) {
+        if (color == TileState.BLACK) {
+            state = TileState.BLACK;
+            Color black = Color.BLACK;
+            circle.fillProperty().setValue(black);
+            circleColor = black;
+        } else if (color == TileState.WHITE) {
+            state = TileState.WHITE;
+            Color white = Color.WHITE;
+            circle.fillProperty().setValue(white);
+            circleColor = white;
+        }
     }
 
     public int getX() {
@@ -91,5 +94,9 @@ public class Tile extends StackPane {
             return false;
         }
         return getState() != state;
+    }
+
+    public int getWeight() {
+        return weight;
     }
 }
