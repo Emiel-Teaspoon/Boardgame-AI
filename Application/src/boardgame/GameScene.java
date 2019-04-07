@@ -5,9 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 public class GameScene {
 
@@ -21,6 +20,7 @@ public class GameScene {
 
     public Scene getScene() {
         BorderPane layout = new BorderPane();
+        layout.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         layout.setPadding(new Insets(20, 0, 20, 20));
 
         Pane gameBoardLayout = new Pane();
