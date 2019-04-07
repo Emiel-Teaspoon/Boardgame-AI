@@ -1,8 +1,8 @@
+package connection;
+
 import java.util.ArrayList;
 
 public class ConnectionHandler {
-
-    private ArrayList<String> gameList;
 
     private Connection connection;
 
@@ -11,53 +11,51 @@ public class ConnectionHandler {
         new Thread(connection).start();
     }
 
-    public void write(String message) {
-        connection.write(message);
+//    nodig?
+//    public void write(String message) {
+//        connection.write(message);
+//    }
+
+    public boolean login(String name) {
+        return connection.request("login " + name);
     }
 
-    public void login(String name) {
-        connection.write("login " + name);
+    public boolean subscribe(String game) {
+        return connection.request("subscribe " + game);
     }
 
-    public void disconnect() {
-        connection.write("disconnect");
+    public boolean move(String move) {
+        return connection.request("move " + move);
     }
 
-    public ArrayList<String> getGameList() {
-        if (gameList == null) {
-            String answer = connection.request("get gamelist");
-            gameList = parseList(answer);
-        }
-        return gameList;
+    public boolean forfeit() {
+        return connection.request("forfeit");
     }
 
-    public ArrayList<String> getPlayerList() {
-        String answer = connection.request("get playerlist");
-        return parseList(answer);
+    public boolean challenge(String player, String game) {
+        return connection.request("challenge \"" + player + "\" \"" + game + "\"");
     }
 
-    public void subscribe(String game) {
-        connection.write("subscribe " + game);
-    }
-
-    public void move(String move) {
-        connection.write("move " + move);
-    }
-
-    public void forfeit() {
-        connection.write("forfeit");
-    }
-
-    public void challenge(String player, String game) {
-        connection.write("challenge \"" + player + "\" \"" + game + "\"");
-    }
-
-    public void acceptChallenge(String number) {
-        connection.write("challenge accept " + number);
+    public boolean acceptChallenge(String number) {
+        return connection.request("challenge accept " + number);
     }
 
     public void help(String command) {
         connection.write("help " + command);
+    }
+
+    public ArrayList<String> getGameList() {
+        String answer = connection.get("playerlist");
+        return parseList(answer);
+    }
+
+    public ArrayList<String> getPlayerList() {
+        String answer = connection.get("playerlist");
+        return parseList(answer);
+    }
+
+    public void disconnect() {
+        connection.write("disconnect");
     }
 
     private ArrayList<String> parseList(String input) {
@@ -72,15 +70,32 @@ public class ConnectionHandler {
         return list;
     }
 
-//    public static void main(String[] args) {
-//        ConnectionHandler con = new ConnectionHandler("localhost", 7789);
-//
-//        try {
-//            Thread.sleep(10);
-//        } catch (InterruptedException e) {
-//        }
-//
-//        con.login("henk");
-//        con.subscribe("Reversi");
-//    }
+    public static void main(String[] args) {
+        // Hanze is:  "145.33.225.170"
+        ConnectionHandler con = new ConnectionHandler("145.33.225.170", 7789);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
+
+        if (con.login("henk")) {
+            System.out.println("woohoo");
+        } else {
+            System.out.println("failed");
+        }
+
+        if (con.login("henk")) {
+            System.out.println("woohoo");
+        } else {
+            System.out.println("failed");
+        }
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+
+        }
+        con.subscribe("Reversi");
+    }
 }
