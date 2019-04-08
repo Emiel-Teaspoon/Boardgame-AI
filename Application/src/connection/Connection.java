@@ -11,6 +11,7 @@ public class Connection implements Runnable {
     private String host;
     private int port;
 
+    private boolean running;
     private boolean okReceived;
     private boolean getReceived;
     private int requestTimeOut;
@@ -30,9 +31,12 @@ public class Connection implements Runnable {
         this.requestTimeOut = 1000;
     }
 
+    public void close() {
+        this.running = false;
+    }
+
     @Override
     public void run() {
-        boolean running = true;
         try (Socket socket = new Socket(host, port)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -50,6 +54,8 @@ public class Connection implements Runnable {
                     }
                 }
             }
+            reader.close();
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

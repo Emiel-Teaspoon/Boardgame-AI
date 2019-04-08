@@ -6,9 +6,17 @@ public class ConnectionHandler {
 
     private Connection connection;
 
-    public ConnectionHandler(String host, int port) {
+    public ConnectionHandler() {
+    }
+
+    public void createConnection(String host, int port) {
         connection = new Connection(this, host, port);
         new Thread(connection).start();
+    }
+
+    public void closeConnection() {
+        disconnect();
+        connection.close();
     }
 
 //    nodig?
@@ -70,9 +78,14 @@ public class ConnectionHandler {
         return list;
     }
 
+    /**
+     * For testing
+     * @param args
+     */
     public static void main(String[] args) {
         // Hanze is:  "145.33.225.170"
-        ConnectionHandler con = new ConnectionHandler("145.33.225.170", 7789);
+        ConnectionHandler con = new ConnectionHandler();
+        con.createConnection("145.33.225.170", 7789);
 
         try {
             Thread.sleep(100);
