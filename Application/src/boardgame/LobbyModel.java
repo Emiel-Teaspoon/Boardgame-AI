@@ -3,13 +3,21 @@ package boardgame;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
+
 public class LobbyModel {
 
     private ObservableList<String> playerList = FXCollections.observableArrayList("R2D2", "C3PO");
     private ObservableList<String> gameList = FXCollections.observableArrayList("Reversi", "TicTacToe");
 
+    private ArrayList<String> arrayPlayerList;
+    private ArrayList<String> arrayGameList;
+
     private String selectedGame;
     private String chosenOpponent;
+
+    public ArrayList<String> getArrayPlayerList(){return arrayPlayerList;}
+    public void setArrayPlayerList(ArrayList<String> arrayList){this.arrayPlayerList = arrayList;}
 
     public void addPlayerToList(String player) {
         playerList.add(player);

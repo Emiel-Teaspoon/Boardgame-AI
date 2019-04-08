@@ -18,6 +18,7 @@ public class BoardGameController {
     private HashMap<String, Scene> scenes = new HashMap<>();
     private HashMap<String, Game> games = new HashMap<>();
 
+    //private ConnectionHandler connectionHandler;
 
     public BoardGameController() {
         startModel = new StartModel();
@@ -76,6 +77,39 @@ public class BoardGameController {
     public void updateIPAdress(String IP) {settingsModel.setIPAddress(IP);}
 
     public void updateGateway(String gateway) {settingsModel.setGateway(Integer.parseInt(gateway));}
+/*
+    public void establishConnection() {
+        connectionHandler = new ConnectionHandler(settingsModel.getIPAddress(), settingsModel.getGateway());
+        // TODO remove test code if no longer needed.
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
 
-    public void updateSettings(){settingsModel.saveSettings();}
+        if (connectionHandler.login("henk")) {
+            System.out.println("woohoo");
+        } else {
+            System.out.println("failed");
+        }
+
+        if (connectionHandler.login("henk")) {
+            System.out.println("woohoo");
+        } else {
+            System.out.println("failed");
+        }
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+
+        }
+        connectionHandler.subscribe("Reversi");
+    }
+
+    public ConnectionHandler getConnectionHandler() {return connectionHandler;}
+
+    public void updatePlayerList() {
+        lobbyModel.setArrayPlayerList(connectionHandler.getPlayerList());
+    }
+*/
 }

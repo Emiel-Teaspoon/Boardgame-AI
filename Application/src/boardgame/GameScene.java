@@ -30,7 +30,7 @@ public class GameScene {
 
         Label playerOneName = new Label(model.getPlayerOne());
         Label playerTwoName = new Label(model.getPlayerTwo());
-        Button backButton = new Button("Back");
+        Button backButton = new Button("Terug");
 
         playerOneName.setMaxWidth(Double.MAX_VALUE);
         playerTwoName.setMaxWidth(Double.MAX_VALUE);

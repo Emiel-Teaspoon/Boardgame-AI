@@ -132,7 +132,6 @@ public class SettingsWindow {
             if (controller.verifyGateway(gateway) && IPPattern.matcher(IPTextField.getText()).matches()) {
                 errorText.setText("");
             }
-            controller.updateSettings();
         });
     }
 }

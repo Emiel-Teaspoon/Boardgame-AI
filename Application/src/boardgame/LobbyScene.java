@@ -15,7 +15,6 @@ public class LobbyScene {
     private LobbyModel model;
 
     private BorderPane mainLayout;
-    private Pane gameSelectionLayout;
     private HBox buttonLayoutRight;
     private HBox buttonLayoutLeft;
 
@@ -74,7 +73,10 @@ public class LobbyScene {
     }
 
     private void createActionListeners() {
-        backButton.setOnAction(e -> controller.switchScene("StartScene", "Startscherm"));
+        backButton.setOnAction(e -> {
+            // TODO close connection
+            controller.switchScene("StartScene", "Startscherm");
+        });
         playButton.setOnAction(e -> {
             model.setSelectedGame(gameListing.getValue());
             model.setChosenOpponent(playerOverview.getSelectionModel().getSelectedItem());
