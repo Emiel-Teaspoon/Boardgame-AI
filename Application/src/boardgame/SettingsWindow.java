@@ -120,17 +120,19 @@ public class SettingsWindow {
         saveButton.setOnAction(e -> {
             if (IPPattern.matcher(IPTextField.getText()).matches()) {
                 controller.updateIPAdress(IPTextField.getText());
-                errorText.setText("");
             } else {
                 errorText.setText("Een ongeldig IP adres is ingevoerd.\n");
             }
             String gateway = gatewayTextField.getText();
             if(controller.verifyGateway(gateway)) {
                 controller.updateGateway(gateway);
-                errorText.setText("");
             } else {
                 errorText.setText(errorText.getText() + "Een ongeldige poort is ingevoerd.");
             }
+            if (controller.verifyGateway(gateway) && IPPattern.matcher(IPTextField.getText()).matches()) {
+                errorText.setText("");
+            }
+            controller.updateSettings();
         });
     }
 }

@@ -76,4 +76,6 @@ public class BoardGameController {
     public void updateIPAdress(String IP) {settingsModel.setIPAddress(IP);}
 
     public void updateGateway(String gateway) {settingsModel.setGateway(Integer.parseInt(gateway));}
+
+    public void updateSettings(){settingsModel.saveSettings();}
 }
