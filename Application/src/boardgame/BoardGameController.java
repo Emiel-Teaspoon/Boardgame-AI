@@ -1,6 +1,7 @@
 package boardgame;
 
 import GameModuleReversi.GameModuleReversi;
+import connection.ConnectionHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -18,8 +19,11 @@ public class BoardGameController {
     private HashMap<String, Scene> scenes = new HashMap<>();
     private HashMap<String, Game> games = new HashMap<>();
 
+    private ConnectionHandler connectionHandler;
 
     public BoardGameController() {
+        connectionHandler = new ConnectionHandler();
+
         startModel = new StartModel();
         settingsModel = new SettingsModel();
 
@@ -34,10 +38,18 @@ public class BoardGameController {
 
     public void createLobbyScene() {
         if (lobbyModel == null) {
-            lobbyModel = new LobbyModel();
+            lobbyModel = new LobbyModel(this);
             LobbyScene lobbyScene = new LobbyScene(this, lobbyModel);
             scenes.put("LobbyScene", lobbyScene.getScene());
         }
+    }
+
+    /**
+     * Start the connection to the server
+     */
+    public void connectToServer() {
+        connectionHandler.connect("145.33.225.170", 7789);
+        connectionHandler.login("Test");
     }
 
     /**
@@ -76,4 +88,8 @@ public class BoardGameController {
     public void updateIPAdress(String IP) {settingsModel.setIPAddress(IP);}
 
     public void updateGateway(String gateway) {settingsModel.setGateway(Integer.parseInt(gateway));}
+
+    public ConnectionHandler getConnectionHandler() {
+        return connectionHandler;
+    }
 }

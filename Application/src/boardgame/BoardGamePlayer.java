@@ -14,4 +14,9 @@ public class BoardGamePlayer extends Application {
         controller.switchScene("StartScene", "Startscherm");
         primaryStage.show();
     }
+
+    public static void main(String[] args) {
+        launch(args);
+        System.exit(0);
+    }
 }
