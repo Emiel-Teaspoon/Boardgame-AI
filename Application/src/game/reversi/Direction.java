@@ -1,4 +1,4 @@
-package game.ai;
+package game.reversi;
 
 public class Direction {
 
