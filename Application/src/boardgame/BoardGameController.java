@@ -35,7 +35,8 @@ public class BoardGameController {
     }
 
     public void loadAvailableGames() {
-        games.put("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE) , new ReversiPlayer(Player.Color.BLACK)));
+        // TODO: change to server input
+        games.put("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE) , new ReversiAI(Player.Color.BLACK)));
     }
 
     public void createLobbyScene() {

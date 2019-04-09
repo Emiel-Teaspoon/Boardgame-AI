@@ -13,6 +13,9 @@ public class Reversi extends Game implements boardgame.Game {
     private List<ReversiMove> currentPossibleMoves;
     private HashMap<Player, Integer> scores;
 
+    private int timer = 10;
+    Thread timerThread;
+
     public Reversi(ReversiPlayer player1, ReversiPlayer player2) {
         super(player1, player2);
         scores = new HashMap<>();
@@ -26,6 +29,34 @@ public class Reversi extends Game implements boardgame.Game {
 
         board.setPlayer(player1);
         setCurrentPlayer(player1);
+    }
+
+    void startTimer() {
+         stopTimer();
+         timerThread = new Thread(() -> {
+             boolean isAlive = true;
+            while(timer > 0 && isAlive) {
+                try {
+                    Thread.sleep(1000);
+                    timer--;
+                    if(timer <= 0) {
+                        passMove(null);
+                        System.out.println("Took too long, next player");
+                    }
+                }
+                catch (InterruptedException e) {
+                    isAlive = false;
+                }
+            }
+         });
+         timerThread.start();
+    }
+
+    void stopTimer() {
+        if(timerThread != null) {
+            timerThread.interrupt();
+        }
+        timer = 10;
     }
 
     @Override
@@ -298,11 +329,12 @@ public class Reversi extends Game implements boardgame.Game {
 
     public void setCurrentPlayer(ReversiPlayer currentPlayer) {
         if(this.currentPlayer != currentPlayer) {
+            startTimer();
             this.currentPlayer = currentPlayer;
             if(currentPlayer instanceof ReversiAI) {
                 new Thread(() -> {
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(1000);
                         ((ReversiAI) currentPlayer).play();
                     }
                     catch (InterruptedException ignored) {
@@ -323,6 +355,7 @@ public class Reversi extends Game implements boardgame.Game {
 
         if(possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) {
             isFinished = true;
+            stopTimer();
         }
 
         return isFinished;

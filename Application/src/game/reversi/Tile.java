@@ -52,11 +52,17 @@ public class Tile extends StackPane {
             Color black = Color.BLACK;
             circle.fillProperty().setValue(black);
             circleColor = black;
+            circle.setStroke(Color.DARKGRAY);
+            circle.setStrokeWidth(3);
+//            circle.setStrokeDashOffset(-1.5);
         } else if (color == TileState.WHITE) {
             state = TileState.WHITE;
             Color white = Color.WHITE;
             circle.fillProperty().setValue(white);
             circleColor = white;
+            circle.setStroke(Color.LIGHTGRAY);
+            circle.setStrokeWidth(3);
+//            circle.setStrokeDashOffset(-1.5);
         }
     }
 
