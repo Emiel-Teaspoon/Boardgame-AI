@@ -22,4 +22,9 @@ public class ReversiNode extends Node {
     public int getWeight() {
         return weight;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf("ABCDEFGH".charAt(x)) + (y + 1);
+    }
 }

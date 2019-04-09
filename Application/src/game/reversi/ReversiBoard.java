@@ -1,15 +1,13 @@
 package game.reversi;
 
-import GameModuleReversi.Tile;
 import game.Board;
-import game.Node;
 import game.Player;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReversiBoard extends Board {
+public class ReversiBoard extends Board implements Cloneable {
 
     List<ReversiNode> nodes;
     private List<Tile> tiles;
@@ -22,6 +20,7 @@ public class ReversiBoard extends Board {
         super(width, height);
         this.game = game;
         boardGraphic = buildBoard();
+
     }
 
     @Override
@@ -36,6 +35,22 @@ public class ReversiBoard extends Board {
         return nodes.get(y * 8 + x);
     }
 
+    void setPlayer(ReversiPlayer player) {
+        for (Tile tile : tiles) {
+            tile.setMovePossible(false);
+        }
+        List<ReversiNode> nodes = new ArrayList<>();
+        for (ReversiMove move : game.getPossibleMoves(player)) {
+           if(!nodes.contains(move.getNode())) {
+               nodes.add(move.getNode());
+           }
+        }
+
+        for (ReversiNode node : nodes) {
+            getTile(node.getX(), node.getY()).setMovePossible(true);
+        }
+    }
+
     public Pane buildBoard() {
         tiles = new ArrayList<>();
         nodes = new ArrayList<>();
@@ -44,7 +59,7 @@ public class ReversiBoard extends Board {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 ReversiNode node = new ReversiNode(x, y, 0);
-                Tile tile = new Tile(tileSize, x, y, 0);
+                Tile tile = new Tile(tileSize, x, y, game);
                 tile.setTranslateX(x * tileSize);
                 tile.setTranslateY(y * tileSize);
 
@@ -64,16 +79,27 @@ public class ReversiBoard extends Board {
         return gameBoard;
     }
 
+    public List<Tile> getTiles() {
+        return tiles;
+    }
+
     public void updateBoard() {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                if(getNode(x,y).isOccupied()) {
+                getTile(x, y).setMovePossible(false);
+                if(getNode(x, y).isOccupied()) {
                     getTile(x, y).drawPiece(getNode(x, y).getColor() == Player.Color.WHITE ? Tile.TileState.WHITE : Tile.TileState.BLACK);
                 }
                 else {
                     getTile(x, y).drawPiece(Tile.TileState.EMPTY);
                 }
             }
+        }
+    }
+
+    public void disableMoves() {
+        for (Tile tile : getTiles()) {
+            tile.setMovePossible(false);
         }
     }
 
@@ -107,6 +133,21 @@ public class ReversiBoard extends Board {
         }
         updateBoard();
     }
+
+//    public ReversiBoard fakeMove(ReversiMove move) {
+//        ReversiBoard clone = null;
+//        try {
+//            clone = (ReversiBoard) this.clone();
+//            clone.setNodes(new ArrayList<>(this.nodes));
+//            clone.setTiles(new ArrayList<>(this.tiles));
+//            for (ReversiNode node : move.checked) {
+//                clone.getNode(node.getX(), node.getY()).assignPlayer(move.getPlayer());
+//            }
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
+//        return clone;
+//    }
 
     public Pane getBoardGraphic() {
         return boardGraphic;

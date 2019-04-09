@@ -139,7 +139,7 @@ public class Connection implements Runnable {
                     e.printStackTrace();
                 }
             }
-            System.out.println(System.currentTimeMillis() - firstStartTime);
+//            System.out.println(System.currentTimeMillis() - firstStartTime);
             return getString;
         } else {
             return null;

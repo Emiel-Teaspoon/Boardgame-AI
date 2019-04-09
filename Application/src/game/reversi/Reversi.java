@@ -1,37 +1,31 @@
 package game.reversi;
 
 import game.Game;
-import game.Move;
 import game.Player;
 import javafx.scene.layout.Pane;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Reversi extends Game implements boardgame.Game {
 
     private ReversiBoard board;
+    private ReversiPlayer currentPlayer;
+    private List<ReversiMove> currentPossibleMoves;
+    private HashMap<Player, Integer> scores;
 
     public Reversi(ReversiPlayer player1, ReversiPlayer player2) {
         super(player1, player2);
+        scores = new HashMap<>();
         player1.setReversi(this);
         player2.setReversi(this);
+
+        scores.put(player1, 2);
+        scores.put(player2, 2);
+
         board = new ReversiBoard(8, 8, this);
 
-        new Thread(() -> {
-            for (int i = 0; i < 31; i++) {
-                try {
-                    Thread.sleep(200);
-                    ((ReversiAI) player1).play();
-                    Thread.sleep(200);
-                    ((ReversiAI) player2).play();
-                }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
+        board.setPlayer(player1);
+        setCurrentPlayer(player1);
     }
 
     @Override
@@ -228,6 +222,9 @@ public class Reversi extends Game implements boardgame.Game {
                 }
             }
         }
+        for (int i = 0; i < moves.size(); i++) {
+            System.out.println(moves.get(i).toString());
+        }
         return moves;
     }
 
@@ -236,12 +233,98 @@ public class Reversi extends Game implements boardgame.Game {
             board.updateBoard();
         }
         else {
+            if(move.getPlayer() == player1) {
+                scores.replace(player1, scores.get(player1) + move.getActualScore());
+                scores.replace(player2, scores.get(player2) - (move.getActualScore() - 1));
+            }
+            else {
+                scores.replace(player2, scores.get(player2) + move.getActualScore());
+                scores.replace(player1, scores.get(player1) - (move.getActualScore() - 1));
+            }
             board.displayMove(move);
+
+        }
+        if(!isGameFinished()) {
+            System.out.println(Arrays.toString(scores.entrySet().toArray()));
+            setCurrentPlayer(getCurrentPlayer() == player1 ? (ReversiPlayer) player2 : (ReversiPlayer) player1);
+        }
+        else {
+            System.out.println("GAME FINISHED");
+
+            int score1 = scores.get(player1);
+            int score2 = scores.get(player2);
+
+            if(score1 == score2) {
+                System.out.println("Tied!");
+            }
+            else {
+                System.out.println(score1 > score2 ? String.format("%s wins with %s to %s", player1.getColor().name(), score1, score2) : String.format("%s wins with %s to %s", player2.getColor().name(), score2, score1));
+            }
         }
     }
 
     @Override
     public Pane startGame() {
         return board.getBoardGraphic();
+    }
+
+    @Override
+    public HashMap<Player, Integer> scores() {
+        return scores;
+    }
+
+    public ReversiBoard getBoard() {
+        return board;
+    }
+
+    public ReversiPlayer getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void passMove(int x, int y) {
+        ReversiMove result = null;
+        currentPossibleMoves = getPossibleMoves(currentPlayer);
+        for (ReversiMove move : currentPossibleMoves) {
+            int movex = move.getNode().getX();
+            int movey = move.getNode().getY();
+
+            if(movex == x && movey == y) {
+                result = move;
+            }
+        }
+
+        passMove(result);
+    }
+
+    public void setCurrentPlayer(ReversiPlayer currentPlayer) {
+        if(this.currentPlayer != currentPlayer) {
+            this.currentPlayer = currentPlayer;
+            if(currentPlayer instanceof ReversiAI) {
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(50);
+                        ((ReversiAI) currentPlayer).play();
+                    }
+                    catch (InterruptedException ignored) {
+
+                    }
+                }).start();
+            }
+            else {
+                board.setPlayer(currentPlayer);
+            }
+        }
+    }
+
+    public boolean isGameFinished() {
+        boolean isFinished = false;
+        List<ReversiMove> possibleMoves1 = getPossibleMoves(player1);
+        List<ReversiMove> possibleMoves2 = getPossibleMoves(player2);
+
+        if(possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) {
+            isFinished = true;
+        }
+
+        return isFinished;
     }
 }

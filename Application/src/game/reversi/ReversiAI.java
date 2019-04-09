@@ -12,6 +12,7 @@ public class ReversiAI extends ReversiPlayer {
     }
 
     public void play() {
+
         List<ReversiMove> moves = reversi.getPossibleMoves(this);
 
         if(moves.isEmpty()) {
@@ -20,15 +21,23 @@ public class ReversiAI extends ReversiPlayer {
         }
 
         int bestScore = -1;
-        ReversiMove bestmove = null;
+        ReversiMove bestMove = null;
         for (ReversiMove move: moves) {
             if(bestScore < move.getScore()) {
                 bestScore = move.getScore();
-                bestmove = move;
+                bestMove = move;
             }
         }
 
-        doMove(bestmove);
+//        for (ReversiMove move: moves) {
+//            if (ReversiAI.this == reversi.player1) {
+//                reversi.getPossibleMoves(reversi.getBoard().fakeMove(move), (ReversiPlayer) reversi.player2);
+//            } else {
+//                reversi.getPossibleMoves(reversi.getBoard().fakeMove(move), (ReversiPlayer) reversi.player1);
+//            }
+//        }
+
+        doMove(bestMove);
     }
 
     @Override

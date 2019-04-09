@@ -1,7 +1,5 @@
 package boardgame;
 
-import GameModuleReversi.GameModuleReversi;
-import boardgame.ConnectionHandler;
 import game.Player;
 import game.reversi.Reversi;
 import game.reversi.ReversiAI;
@@ -37,7 +35,7 @@ public class BoardGameController {
     }
 
     public void loadAvailableGames() {
-        games.put("Reversi", new Reversi(new ReversiAI(Player.Color.WHITE) , new ReversiAI(Player.Color.BLACK)));
+        games.put("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE) , new ReversiPlayer(Player.Color.BLACK)));
     }
 
     public void createLobbyScene() {
