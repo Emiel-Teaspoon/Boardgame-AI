@@ -1,20 +1,61 @@
 package boardgame;
 
+import boardgame.Connection;
+
 import java.util.ArrayList;
 
+/**
+ * Handles the connection to the server by sending the right commands.
+ *
+ * @author Leon Smit
+ */
 public class ConnectionHandler {
 
     private Connection connection;
+    private boolean isConnected;
 
-    public ConnectionHandler(String host, int port) {
-        connection = new Connection(this, host, port);
-        new Thread(connection).start();
+    public ConnectionHandler() {
+        isConnected = false;
     }
 
-//    nodig?
-//    public void write(String message) {
-//        connection.write(message);
-//    }
+    /**
+     * Establish a connection with the server
+     *
+     * @param host the address of the server
+     * @param port the port number of the server
+     */
+    public void connect(String host, int port) {
+        connection = new Connection(this, host, port);
+        new Thread(connection).start();
+
+        while (!connection.isConnected()) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        isConnected = true;
+    }
+
+    /**
+     * Close the current connection to the server
+     */
+    public void close() {
+        disconnect();
+        connection.close();
+        isConnected = false;
+        connection = null;
+    }
+
+    /**
+     * Returns whether the server currently has a connection to the server
+     *
+     * @return whether the handler has a connection to the server
+     */
+    public boolean isConnected() {
+        return isConnected;
+    }
 
     public boolean login(String name) {
         return connection.request("login " + name);
@@ -45,12 +86,17 @@ public class ConnectionHandler {
     }
 
     public ArrayList<String> getGameList() {
-        String answer = connection.get("playerlist");
+        String answer = connection.get("gamelist");
+        if (answer == null) return null;
         return parseList(answer);
     }
 
     public ArrayList<String> getPlayerList() {
         String answer = connection.get("playerlist");
+        if (answer == null) {
+            System.out.println("null in getPlayerList()");
+            return null;
+        }
         return parseList(answer);
     }
 

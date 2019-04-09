@@ -1,7 +1,7 @@
 package boardgame;
 
 import GameModuleReversi.GameModuleReversi;
-import connection.ConnectionHandler;
+import boardgame.ConnectionHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -48,7 +48,7 @@ public class BoardGameController {
      * Start the connection to the server
      */
     public void connectToServer() {
-        connectionHandler.connect("145.33.225.170", 7789);
+        connectionHandler.connect("localhost", 7789);
         connectionHandler.login("Test");
     }
 

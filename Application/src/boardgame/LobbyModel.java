@@ -1,7 +1,7 @@
 package boardgame;
 
-import connection.Connection;
-import connection.ConnectionHandler;
+import boardgame.Connection;
+import boardgame.ConnectionHandler;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,6 +55,7 @@ public class LobbyModel {
      * @param games ArrayList containing Strings of games
      */
     public void updateGameList(ArrayList<String> games) {
+        if (games == null) return;
         gameList.clear();
         gameList.addAll(games);
     }
@@ -64,6 +65,7 @@ public class LobbyModel {
      * @param players ArrayList containing Strings of players
      */
     public void updatePlayerList(ArrayList<String> players) {
+        if (players == null) return;
         playerList.clear();
         playerList.addAll(players);
     }
