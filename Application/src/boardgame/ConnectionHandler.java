@@ -3,6 +3,7 @@ package boardgame;
 import boardgame.Connection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Handles the connection to the server by sending the right commands.
@@ -98,6 +99,40 @@ public class ConnectionHandler {
             return null;
         }
         return parseList(answer);
+    }
+
+    /**
+     * Parses a string into a HashMap of two Strings with a message type
+     * @param message Servermessage starting with SVR GAME
+     */
+    public void handleGameMessage(String message) {
+        message = message.substring(9);
+        String command = message.substring(0, message.indexOf(' '));
+
+        System.out.println(message);
+        message = message.substring(message.indexOf('{') + 1, message.indexOf('}'));
+        System.out.println(command);
+        System.out.println(message);
+
+        HashMap<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", command.toLowerCase());
+
+        boolean finished = false;
+        while (!finished) {
+            String key = message.substring(0, message.indexOf(':'));
+            message = message.substring(message.indexOf("\"") + 1);
+
+            String value = message.substring(0, message.indexOf('\"'));
+            if (message.contains(",")) {
+                message = message.substring(message.indexOf(",") + 2);
+            } else {
+                finished = true;
+            }
+            messageMap.put(key, value);
+        }
+
+        // TODO decide what to do with the hashmap
+        System.out.println(messageMap.toString());
     }
 
     public void disconnect() {

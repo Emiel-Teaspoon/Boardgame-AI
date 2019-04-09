@@ -60,8 +60,8 @@ public class Connection implements Runnable {
                         okReceived = true;
                     } else if (message.startsWith("SVR GAMELIST") || message.startsWith("SVR PLAYERLIST")) {
                         getString = message;
-                    } else {
-                        // handler.addMessage(message);
+                    } else if (message.startsWith("SVR GAME ")) {
+                        handler.handleGameMessage(message);
                     }
                 }
             }
