@@ -10,6 +10,7 @@ public class ReversiMove extends Move {
 
     List<ReversiNode> checked;
     ReversiNode node;
+    int score;
 
     public ReversiMove(Player player, Node node) {
         super(player, node);
@@ -20,6 +21,7 @@ public class ReversiMove extends Move {
         this.node = targetNode;
         this.player = player;
         this.checked = checked;
+        this.score = targetNode.getWeight() + checked.size();
     }
 
     public List<ReversiNode> getChecked() {
@@ -29,5 +31,9 @@ public class ReversiMove extends Move {
     @Override
     public ReversiNode getNode() {
         return node;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

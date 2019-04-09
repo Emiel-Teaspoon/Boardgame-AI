@@ -41,6 +41,10 @@ public class Node {
         color = player.getColor();
     }
 
+    public Player.Color getColor() {
+        return color;
+    }
+
     public boolean isEnemy(Player currentPlayer) {
         if (isOccupied()) {
             return currentPlayer.getColor() != color;

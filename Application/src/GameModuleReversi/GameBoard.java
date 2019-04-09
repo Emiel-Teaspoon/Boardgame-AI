@@ -1,5 +1,6 @@
 package GameModuleReversi;
 
+import game.reversi.ReversiBoard;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
@@ -60,13 +61,5 @@ public class GameBoard {
     public void setTileState(Tile tile, Tile.TileState newState) {
         tiles.get(tiles.indexOf(tile)).drawPiece(newState);
     }
-
-    public void displayMove(Move move) {
-        for (Tile tile : move.getOvertakenTiles()) {
-            setTileState(tile, move.getColor());
-        }
-    }
-
-
 
 }

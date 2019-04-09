@@ -8,12 +8,30 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reversi extends Game {
+public class Reversi extends Game implements boardgame.Game {
 
-    ReversiBoard board;
+    private ReversiBoard board;
 
-    public Reversi(ReversiPlayer... players) {
-        super(players);
+    public Reversi(ReversiPlayer player1, ReversiPlayer player2) {
+        super(player1, player2);
+        player1.setReversi(this);
+        player2.setReversi(this);
+        board = new ReversiBoard(8, 8, this);
+
+        new Thread(() -> {
+            for (int i = 0; i < 31; i++) {
+                try {
+                    Thread.sleep(200);
+                    ((ReversiAI) player1).play();
+                    Thread.sleep(200);
+                    ((ReversiAI) player2).play();
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     @Override
@@ -213,8 +231,17 @@ public class Reversi extends Game {
         return moves;
     }
 
+    void passMove(ReversiMove move) {
+        if(move == null) {
+            board.updateBoard();
+        }
+        else {
+            board.displayMove(move);
+        }
+    }
+
     @Override
     public Pane startGame() {
-        return null;
+        return board.getBoardGraphic();
     }
 }

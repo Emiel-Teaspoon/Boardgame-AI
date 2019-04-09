@@ -2,6 +2,10 @@ package boardgame;
 
 import GameModuleReversi.GameModuleReversi;
 import boardgame.ConnectionHandler;
+import game.Player;
+import game.reversi.Reversi;
+import game.reversi.ReversiAI;
+import game.reversi.ReversiPlayer;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -33,7 +37,7 @@ public class BoardGameController {
     }
 
     public void loadAvailableGames() {
-        games.put("Reversi", new GameModuleReversi());
+        games.put("Reversi", new Reversi(new ReversiAI(Player.Color.WHITE) , new ReversiAI(Player.Color.BLACK)));
     }
 
     public void createLobbyScene() {
@@ -48,7 +52,7 @@ public class BoardGameController {
      * Start the connection to the server
      */
     public void connectToServer() {
-        connectionHandler.connect("localhost", 7789);
+        connectionHandler.connect("145.33.225.170", 7789);
         connectionHandler.login("Test");
     }
 
@@ -59,7 +63,7 @@ public class BoardGameController {
         if (gameModel == null) {
             gameModel = new GameModel();
             gameModel.setPlayerOne(startModel.getName());
-            gameModel.setCurrentGame(games.get(lobbyModel.getSelectedGame()));
+            gameModel.setCurrentGame(games.get("Reversi"));
             gameModel.setPlayerTwo(lobbyModel.getChosenOpponent());
             GameScene gameScene = new GameScene(this, gameModel);
             scenes.put("GameScene", gameScene.getScene());
