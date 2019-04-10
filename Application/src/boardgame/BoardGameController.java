@@ -1,5 +1,6 @@
 package boardgame;
 
+import game.Game;
 import game.Player;
 import game.reversi.Reversi;
 import game.reversi.ReversiAI;
@@ -7,6 +8,7 @@ import game.reversi.ReversiPlayer;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BoardGameController {
@@ -24,7 +26,7 @@ public class BoardGameController {
     private ConnectionHandler connectionHandler;
 
     public BoardGameController() {
-        connectionHandler = new ConnectionHandler();
+        connectionHandler = new ConnectionHandler(this);
 
         startModel = new StartModel();
         settingsModel = new SettingsModel();
@@ -55,8 +57,38 @@ public class BoardGameController {
      * Start the connection to the server
      */
     public void connectToServer() {
-        connectionHandler.connect("145.33.225.170", 7789);
+        // 145.33.225.170
+        connectionHandler.connect("localhost", 7789);
         connectionHandler.login("Test");
+    }
+
+    public void handleMessage(HashMap<String, String> message) {
+        switch (message.get("type")) {
+            case "CHALLENGE":
+                // Contains keys: challenger, challengenumber, gametype
+                System.out.println("challenged");
+            case "MATCH":
+                // Contains keys
+                // TODO: add better check
+                if (lobbyModel != null) lobbyModel.message(message);
+                break;
+            case "MOVE":
+                // Contains keys: player, move, details
+            case "WIN":
+                // The player won
+                // Contains keys: playeronescore, playertwoscore, comment
+            case "LOSE":
+                // The player lost
+                // Contains keys: playeronescore, playertwoscore, comment
+            case "DRAW":
+                // The player lost
+                // Contains keys: playeronescore, playertwoscore, comment
+                //TODO: Add better check;
+                if (gameModel != null) gameModel.getCurrentGame().message(message);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -76,8 +108,9 @@ public class BoardGameController {
         try {
             Integer.parseInt(currentInput);
             isInteger = true;
-        } catch (NumberFormatException currentException){}
-        return  isInteger;
+        } catch (NumberFormatException currentException) {
+        }
+        return isInteger;
     }
 
     public void switchScene(String sceneName, String sceneTitle) {
@@ -85,11 +118,17 @@ public class BoardGameController {
         primaryStage.setScene(scenes.get(sceneName));
     }
 
-    public void setStage(Stage stage) {this.primaryStage = stage;}
+    public void setStage(Stage stage) {
+        this.primaryStage = stage;
+    }
 
-    public void updateIPAdress(String IP) {settingsModel.setIPAddress(IP);}
+    public void updateIPAdress(String IP) {
+        settingsModel.setIPAddress(IP);
+    }
 
-    public void updateGateway(String gateway) {settingsModel.setGateway(Integer.parseInt(gateway));}
+    public void updateGateway(String gateway) {
+        settingsModel.setGateway(Integer.parseInt(gateway));
+    }
 
     public ConnectionHandler getConnectionHandler() {
         return connectionHandler;

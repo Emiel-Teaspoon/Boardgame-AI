@@ -1,7 +1,5 @@
 package boardgame;
 
-import boardgame.Connection;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,10 +10,12 @@ import java.util.HashMap;
  */
 public class ConnectionHandler {
 
+    private BoardGameController controller;
     private Connection connection;
     private boolean isConnected;
 
-    public ConnectionHandler() {
+    public ConnectionHandler(BoardGameController controller) {
+        this.controller = controller;
         isConnected = false;
     }
 
@@ -102,7 +102,8 @@ public class ConnectionHandler {
     }
 
     /**
-     * Parses a string into a HashMap of two Strings with a message type
+     * Parses a string into a HashMap of two Strings with a message type and sends it to the controller.
+     *
      * @param message Servermessage starting with SVR GAME
      */
     public void handleGameMessage(String message) {
@@ -115,7 +116,7 @@ public class ConnectionHandler {
         System.out.println(message);
 
         HashMap<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", command.toLowerCase());
+        messageMap.put("type", command);
 
         boolean finished = false;
         while (!finished) {
@@ -130,9 +131,7 @@ public class ConnectionHandler {
             }
             messageMap.put(key, value);
         }
-
-        // TODO decide what to do with the hashmap
-        System.out.println(messageMap.toString());
+        controller.handleMessage(messageMap);
     }
 
     public void disconnect() {

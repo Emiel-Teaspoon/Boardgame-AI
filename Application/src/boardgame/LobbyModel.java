@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LobbyModel {
 
@@ -36,6 +37,23 @@ public class LobbyModel {
     }
 
     /**
+     * Handles incoming messages from the server.
+     *
+     * @param message HashMap containing type and information from message
+     */
+    public void message(HashMap<String, String> message) {
+        switch (message.get("type")) {
+            case "CHALLENGE":
+                // TODO: Challenge should be handled here
+                // Contains keys: challenger, challengenumber, gametype
+                break;
+            case "MATCH":
+                // TODO: Match starts, make new Game
+                break;
+        }
+    }
+
+    /**
      * Creates new LobbyUpdater and runs it to update playerlist. Run when entering lobby.
      */
     public void startUpdating() {
@@ -52,6 +70,7 @@ public class LobbyModel {
 
     /**
      * Set the values of the GamesList
+     *
      * @param games ArrayList containing Strings of games
      */
     public void updateGameList(ArrayList<String> games) {
@@ -62,6 +81,7 @@ public class LobbyModel {
 
     /**
      * Set the values of the PlayerList
+     *
      * @param players ArrayList containing Strings of players
      */
     public void updatePlayerList(ArrayList<String> players) {

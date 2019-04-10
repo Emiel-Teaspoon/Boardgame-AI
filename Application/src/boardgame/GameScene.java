@@ -1,5 +1,6 @@
 package boardgame;
 
+import game.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -48,7 +49,6 @@ public class GameScene {
 
         return new Scene(layout, 1200, 800);
     }
-
 
 
 }

@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
 
 import java.util.*;
 
-public class Reversi extends Game implements boardgame.Game {
+public class Reversi extends Game {
 
     private BoardGameController controller;
 
@@ -37,10 +37,10 @@ public class Reversi extends Game implements boardgame.Game {
     }
 
     void startTimer() {
-         stopTimer();
-         timerThread = new Thread(() -> {
-             boolean isAlive = true;
-            while(timer > 0 && isAlive) {
+        stopTimer();
+        timerThread = new Thread(() -> {
+            boolean isAlive = true;
+            while (timer > 0 && isAlive) {
                 try {
                     Thread.sleep(1000);
                     timer--;
@@ -51,21 +51,20 @@ public class Reversi extends Game implements boardgame.Game {
                             board.updateBlackTimer("" + timer);
                         }
                     });
-                    if(timer <= 0) {
+                    if (timer <= 0) {
                         passMove(null);
                         board.updateGameInfoDisplay("Tijd is op. Volgende speler is aan de beurt.");
                     }
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     isAlive = false;
                 }
             }
-         });
-         timerThread.start();
+        });
+        timerThread.start();
     }
 
     void stopTimer() {
-        if(timerThread != null) {
+        if (timerThread != null) {
             timerThread.interrupt();
         }
         timer = 10;
@@ -83,9 +82,9 @@ public class Reversi extends Game implements boardgame.Game {
         Direction checkingDir;
 
         for (ReversiNode node : board.getNodes()) {
-            if(node.isOccupied()) {
+            if (node.isOccupied()) {
                 occupied.add(node);
-                if(node.isMine(player)) {
+                if (node.isMine(player)) {
                     mine.add(node);
                 }
             }
@@ -93,55 +92,52 @@ public class Reversi extends Game implements boardgame.Game {
 
         for (ReversiNode node : mine) {
             for (ReversiNode neighbour : board.getNeighbourNodes(node)) {
-                if(neighbour.isEnemy(player)) {
+                if (neighbour.isEnemy(player)) {
                     checked = new ArrayList<>();
                     checked.add(neighbour);
                     checkingDir = ReversiNode.getDirection(node, neighbour);
                     boolean run = true;
                     ReversiNode nextToCheck = neighbour;
-                    while(run) {
+                    while (run) {
                         nextToCheck = board.getNextNodeInDir(nextToCheck, checkingDir);
-                        if(nextToCheck == null) {
+                        if (nextToCheck == null) {
                             run = false;
                             continue;
                         }
                         if (nextToCheck.isMine(player) && nextToCheck.isOccupied()) {
                             run = false;
-                        }
-                        else {
-                            if(!checked.contains(nextToCheck)) {
+                        } else {
+                            if (!checked.contains(nextToCheck)) {
                                 checked.add(nextToCheck);
                             }
-                            if(!nextToCheck.isOccupied()) {
+                            if (!nextToCheck.isOccupied()) {
                                 //TODO backtracking
-                                for (ReversiNode clearNodeNeighbour: board.getNeighbourNodes(nextToCheck)) {
+                                for (ReversiNode clearNodeNeighbour : board.getNeighbourNodes(nextToCheck)) {
                                     if (clearNodeNeighbour.isEnemy(player) && !checked.contains(clearNodeNeighbour)) {
                                         extraChecked.clear();
                                         checkingDir = ReversiNode.getDirection(nextToCheck, clearNodeNeighbour);
-                                        if(!extraChecked.contains(clearNodeNeighbour)) {
+                                        if (!extraChecked.contains(clearNodeNeighbour)) {
                                             extraChecked.add(clearNodeNeighbour);
                                         }
                                         ReversiNode nextToCheckExtra = clearNodeNeighbour;
                                         boolean runNext = true;
                                         while (runNext) {
                                             nextToCheckExtra = board.getNextNodeInDir(nextToCheckExtra, checkingDir);
-                                            if(nextToCheckExtra == null) {
+                                            if (nextToCheckExtra == null) {
                                                 runNext = false;
                                                 extraChecked = new ArrayList<>();
                                                 continue;
                                             }
-                                            if(nextToCheckExtra.isOccupied()){
-                                                if(nextToCheckExtra.isEnemy(player)) {
-                                                    if(!extraChecked.contains(nextToCheckExtra)) {
+                                            if (nextToCheckExtra.isOccupied()) {
+                                                if (nextToCheckExtra.isEnemy(player)) {
+                                                    if (!extraChecked.contains(nextToCheckExtra)) {
                                                         extraChecked.add(nextToCheckExtra);
                                                     }
-                                                }
-                                                else {
+                                                } else {
                                                     runNext = false;
                                                     checked.addAll(extraChecked);
                                                 }
-                                            }
-                                            else {
+                                            } else {
                                                 runNext = false;
                                                 extraChecked = new ArrayList<>();
                                             }
@@ -151,12 +147,12 @@ public class Reversi extends Game implements boardgame.Game {
 
                                 ReversiMove possibleMove = new ReversiMove(player, checked, nextToCheck);
                                 boolean add = true;
-                                for (ReversiMove move: moves) {
-                                    if(move.getNode().equals(nextToCheck)) {
+                                for (ReversiMove move : moves) {
+                                    if (move.getNode().equals(nextToCheck)) {
                                         add = false;
                                     }
                                 }
-                                if(add) {
+                                if (add) {
                                     moves.add(possibleMove);
                                 }
                                 run = false;
@@ -182,9 +178,9 @@ public class Reversi extends Game implements boardgame.Game {
         Direction checkingDir;
 
         for (ReversiNode node : board.getNodes()) {
-            if(node.isOccupied()) {
+            if (node.isOccupied()) {
                 occupied.add(node);
-                if(node.isMine(player)) {
+                if (node.isMine(player)) {
                     mine.add(node);
                 }
             }
@@ -192,55 +188,52 @@ public class Reversi extends Game implements boardgame.Game {
 
         for (ReversiNode node : mine) {
             for (ReversiNode neighbour : board.getNeighbourNodes(node)) {
-                if(neighbour.isEnemy(player)) {
+                if (neighbour.isEnemy(player)) {
                     checked = new ArrayList<>();
                     checked.add(neighbour);
                     checkingDir = ReversiNode.getDirection(node, neighbour);
                     boolean run = true;
                     ReversiNode nextToCheck = neighbour;
-                    while(run) {
+                    while (run) {
                         nextToCheck = board.getNextNodeInDir(nextToCheck, checkingDir);
-                        if(nextToCheck == null) {
+                        if (nextToCheck == null) {
                             run = false;
                             continue;
                         }
                         if (nextToCheck.isMine(player) && nextToCheck.isOccupied()) {
                             run = false;
-                        }
-                        else {
-                            if(!checked.contains(nextToCheck)) {
+                        } else {
+                            if (!checked.contains(nextToCheck)) {
                                 checked.add(nextToCheck);
                             }
-                            if(!nextToCheck.isOccupied()) {
+                            if (!nextToCheck.isOccupied()) {
                                 //TODO backtracking
-                                for (ReversiNode clearNodeNeighbour: board.getNeighbourNodes(nextToCheck)) {
+                                for (ReversiNode clearNodeNeighbour : board.getNeighbourNodes(nextToCheck)) {
                                     if (clearNodeNeighbour.isEnemy(player) && !checked.contains(clearNodeNeighbour)) {
                                         extraChecked.clear();
                                         checkingDir = ReversiNode.getDirection(nextToCheck, clearNodeNeighbour);
-                                        if(!extraChecked.contains(clearNodeNeighbour)) {
+                                        if (!extraChecked.contains(clearNodeNeighbour)) {
                                             extraChecked.add(clearNodeNeighbour);
                                         }
                                         ReversiNode nextToCheckExtra = clearNodeNeighbour;
                                         boolean runNext = true;
                                         while (runNext) {
                                             nextToCheckExtra = board.getNextNodeInDir(nextToCheckExtra, checkingDir);
-                                            if(nextToCheckExtra == null) {
+                                            if (nextToCheckExtra == null) {
                                                 runNext = false;
                                                 extraChecked = new ArrayList<>();
                                                 continue;
                                             }
-                                            if(nextToCheckExtra.isOccupied()){
-                                                if(nextToCheckExtra.isEnemy(player)) {
-                                                    if(!extraChecked.contains(nextToCheckExtra)) {
+                                            if (nextToCheckExtra.isOccupied()) {
+                                                if (nextToCheckExtra.isEnemy(player)) {
+                                                    if (!extraChecked.contains(nextToCheckExtra)) {
                                                         extraChecked.add(nextToCheckExtra);
                                                     }
-                                                }
-                                                else {
+                                                } else {
                                                     runNext = false;
                                                     checked.addAll(extraChecked);
                                                 }
-                                            }
-                                            else {
+                                            } else {
                                                 runNext = false;
                                                 extraChecked = new ArrayList<>();
                                             }
@@ -250,12 +243,12 @@ public class Reversi extends Game implements boardgame.Game {
 
                                 ReversiMove possibleMove = new ReversiMove(player, checked, nextToCheck);
                                 boolean add = true;
-                                for (ReversiMove move: moves) {
-                                    if(move.getNode().equals(nextToCheck)) {
+                                for (ReversiMove move : moves) {
+                                    if (move.getNode().equals(nextToCheck)) {
                                         add = false;
                                     }
                                 }
-                                if(add) {
+                                if (add) {
                                     moves.add(possibleMove);
                                 }
                                 run = false;
@@ -272,10 +265,10 @@ public class Reversi extends Game implements boardgame.Game {
     }
 
     void passMove(ReversiMove move) {
-        if(move == null) {
+        if (move == null) {
             board.updateBoard();
         } else {
-            if(move.getPlayer() == player1) {
+            if (move.getPlayer() == player1) {
                 int playerOneScore = scores.get(player1) + move.getActualScore();
                 int playerTwoScore = scores.get(player2) - (move.getActualScore() - 1);
 
@@ -283,8 +276,7 @@ public class Reversi extends Game implements boardgame.Game {
                 scores.replace(player2, playerTwoScore);
 
                 Platform.runLater(() -> board.updatePlayerscores(playerOneScore, playerTwoScore));
-            }
-            else {
+            } else {
                 int playerOneScore = scores.get(player1) - (move.getActualScore() - 1);
                 int playerTwoScore = scores.get(player2) + move.getActualScore();
 
@@ -296,7 +288,7 @@ public class Reversi extends Game implements boardgame.Game {
             board.displayMove(move);
 
         }
-        if(!isGameFinished()) {
+        if (!isGameFinished()) {
             if (currentPlayer == player1) {
                 if (move != null) {
                     board.updateGameInfoDisplay("Wit heeft " + move.getActualScore() + " punten gekregen.");
@@ -311,22 +303,48 @@ public class Reversi extends Game implements boardgame.Game {
                 }
             }
             setCurrentPlayer(getCurrentPlayer() == player1 ? (ReversiPlayer) player2 : (ReversiPlayer) player1);
-        }
-        else {
+        } else {
             board.updateGameInfoDisplay("-----Spel geëindigd-----");
 
             int score1 = scores.get(player1);
             int score2 = scores.get(player2);
 
-            if(score1 == score2) {
+            if (score1 == score2) {
                 board.updateGameInfoDisplay("Tied!");
-            }
-            else {
+            } else {
                 board.updateGameInfoDisplay(score1 > score2 ?
                         String.format("%s heeft gewonnen met %s tegen %s", player1.getColor().name(), score1, score2) :
                         String.format("%s heeft gewonnen met %s tegen %s", player2.getColor().name(), score2, score1)
                 );
             }
+        }
+    }
+
+    // TODO: (optional) move to abstract class and make special abstract functions?
+    // TODO: add what needs to happen with each case
+    public void handleMessage(HashMap<String, String> message) {
+        switch (message.get("type")) {
+            case "MATCH":
+                // When the match starts
+                // Contains keys: playertomove, gametype, opponent
+                break;
+            case "MOVE":
+                // Contains keys: player, move, details
+                break;
+            case "WIN":
+                // The player won
+                // Contains keys: playeronescore, playertwoscore, comment
+                break;
+            case "LOSE":
+                // The player lost
+                // Contains keys: playeronescore, playertwoscore, comment
+                break;
+            case "DRAW":
+                // The player lost
+                // Contains keys: playeronescore, playertwoscore, comment
+                break;
+            default:
+                break;
         }
     }
 
@@ -338,6 +356,35 @@ public class Reversi extends Game implements boardgame.Game {
     @Override
     public HashMap<Player, Integer> scores() {
         return scores;
+    }
+
+    /**
+     * Gets a message from the server and handles it
+     *
+     * @param message HashMap containing data from the Servermessage
+     */
+    @Override
+    public void message(HashMap<String, String> message) {
+        switch (message.get("type")) {
+            case "MOVE":
+                // Contains keys: player, move, details
+                break;
+            case "WIN":
+                // The player won
+                // Contains keys: playeronescore, playertwoscore, comment
+                break;
+            case "LOSE":
+                // The player lost
+                // Contains keys: playeronescore, playertwoscore, comment
+                break;
+            case "DRAW":
+                // The player lost
+                // Contains keys: playeronescore, playertwoscore, comment
+                break;
+            default:
+                // message is not valid, (ignore or exception?)
+                break;
+        }
     }
 
     public ReversiBoard getBoard() {
@@ -355,7 +402,7 @@ public class Reversi extends Game implements boardgame.Game {
             int movex = move.getNode().getX();
             int movey = move.getNode().getY();
 
-            if(movex == x && movey == y) {
+            if (movex == x && movey == y) {
                 result = move;
             }
         }
@@ -364,7 +411,7 @@ public class Reversi extends Game implements boardgame.Game {
     }
 
     public void setCurrentPlayer(ReversiPlayer currentPlayer) {
-        if(this.currentPlayer != currentPlayer) {
+        if (this.currentPlayer != currentPlayer) {
             Platform.runLater(() -> {
                 if (currentPlayer.getColor() == Player.Color.WHITE) {
                     board.updateWhiteTimer("" + timer);
@@ -374,18 +421,16 @@ public class Reversi extends Game implements boardgame.Game {
             });
             startTimer();
             this.currentPlayer = currentPlayer;
-            if(currentPlayer instanceof ReversiAI) {
+            if (currentPlayer instanceof ReversiAI) {
                 new Thread(() -> {
                     try {
                         Thread.sleep(1000);
                         ((ReversiAI) currentPlayer).play();
-                    }
-                    catch (InterruptedException ignored) {
+                    } catch (InterruptedException ignored) {
 
                     }
                 }).start();
-            }
-            else {
+            } else {
                 board.setPlayer(currentPlayer);
             }
         }
@@ -396,7 +441,7 @@ public class Reversi extends Game implements boardgame.Game {
         List<ReversiMove> possibleMoves1 = getPossibleMoves(player1);
         List<ReversiMove> possibleMoves2 = getPossibleMoves(player2);
 
-        if(possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) {
+        if (possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) {
             isFinished = true;
             stopTimer();
         }

@@ -1,5 +1,7 @@
 package boardgame;
 
+import game.Game;
+
 public class GameModel {
 
     private Game currentGame;

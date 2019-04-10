@@ -1,12 +1,17 @@
 package game;
 
+import javafx.scene.layout.Pane;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-public abstract class Game implements boardgame.Game {
+public abstract class Game {
 
     public Player player1;
     public Player player2;
+
+
 
     public Game(Player player1, Player player2) {
         this.player1 = player1;
@@ -30,4 +35,10 @@ public abstract class Game implements boardgame.Game {
     public void setPlayer2(Player player2) {
         this.player2 = player2;
     }
+
+    public abstract Pane startGame();
+
+    public abstract HashMap<Player, Integer> scores();
+
+    public abstract void message(HashMap<String, String> message);
 }
