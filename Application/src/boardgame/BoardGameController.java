@@ -36,7 +36,11 @@ public class BoardGameController {
 
     public void loadAvailableGames() {
         // TODO: change to server input
-        games.put("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE) , new ReversiAI(Player.Color.BLACK)));
+        if (games.get("Reversi") == null) {
+            games.put("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
+        } else {
+            games.replace("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
+        }
     }
 
     public void createLobbyScene() {
@@ -59,17 +63,12 @@ public class BoardGameController {
      * Creates the game model and scene. Also fill the gameModel with the necessary information.
      */
     public void prepareGameScene() {
-        if (gameModel == null) {
-            gameModel = new GameModel();
-            gameModel.setPlayerOne(startModel.getName());
-            gameModel.setCurrentGame(games.get("Reversi"));
-            gameModel.setPlayerTwo(lobbyModel.getChosenOpponent());
-            GameScene gameScene = new GameScene(this, gameModel);
-            scenes.put("GameScene", gameScene.getScene());
-        }
+        gameModel = new GameModel();
         gameModel.setPlayerOne(startModel.getName());
-        gameModel.setCurrentGame(games.get(lobbyModel.getSelectedGame()));
+        gameModel.setCurrentGame(games.get("Reversi"));
         gameModel.setPlayerTwo(lobbyModel.getChosenOpponent());
+        GameScene gameScene = new GameScene(this, gameModel);
+        scenes.put("GameScene", gameScene.getScene());
     }
 
     public boolean verifyGateway(String currentInput) {

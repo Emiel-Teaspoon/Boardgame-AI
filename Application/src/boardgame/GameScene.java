@@ -44,10 +44,9 @@ public class GameScene {
         sideBar.setAlignment(Pos.CENTER_RIGHT);
         sideBar.getChildren().addAll(playerOneName, playerTwoName, backButton);
 
-        layout.setLeft(gameBoardLayout);
-        layout.setRight(sideBar);
+        layout.setCenter(gameBoardLayout);
 
-        return new Scene(layout, 800, 800);
+        return new Scene(layout, 1200, 800);
     }
 
 

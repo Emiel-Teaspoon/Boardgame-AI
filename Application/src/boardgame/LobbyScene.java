@@ -82,7 +82,7 @@ public class LobbyScene {
             model.setChosenOpponent(playerOverview.getSelectionModel().getSelectedItem());
             controller.loadAvailableGames();
             controller.prepareGameScene();
-            controller.switchScene("GameScene", model.getSelectedGame());
+            controller.switchScene("GameScene", "Reversi");
         });
     }
 }

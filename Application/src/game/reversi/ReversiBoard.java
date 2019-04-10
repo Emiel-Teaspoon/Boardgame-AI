@@ -1,24 +1,44 @@
 package game.reversi;
 
+import boardgame.BoardGameController;
 import game.Board;
 import game.Player;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReversiBoard extends Board implements Cloneable {
 
-    List<ReversiNode> nodes;
+    private BoardGameController controller;
+
+    private List<ReversiNode> nodes;
     private List<Tile> tiles;
     private int tileSize = 80;
-    Pane boardGraphic;
+    private Pane boardGraphic;
 
-    Reversi game;
+    private TextArea gameInformation;
+    private Label playerOneScore;
+    private Label playerTwoScore;
+    private Text whiteTimer;
+    private Text blackTimer;
 
-    public ReversiBoard(int width, int height, Reversi game) {
+    private Reversi game;
+
+    public ReversiBoard(int width, int height, Reversi game, BoardGameController controller) {
         super(width, height);
         this.game = game;
+        this.controller = controller;
         boardGraphic = buildBoard();
 
     }
@@ -54,7 +74,10 @@ public class ReversiBoard extends Board implements Cloneable {
     public Pane buildBoard() {
         tiles = new ArrayList<>();
         nodes = new ArrayList<>();
+
+        BorderPane mainLayout = new BorderPane();
         Pane gameBoard = new Pane();
+        mainLayout.setCenter(gameBoard);
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -76,7 +99,71 @@ public class ReversiBoard extends Board implements Cloneable {
 
         updateBoard();
 
-        return gameBoard;
+        gameInformation = new TextArea();
+        gameInformation.setEditable(false);
+        gameInformation.setMaxWidth(250);
+
+        GridPane gameInfoGridLayout = new GridPane();
+        gameInfoGridLayout.setAlignment(Pos.CENTER);
+        gameInfoGridLayout.setTranslateX(585);
+        gameInfoGridLayout.setTranslateY(0);
+        gameInfoGridLayout.setVgap(10);
+
+        playerOneScore = new Label("2");
+        playerTwoScore = new Label("2");
+
+        gameInfoGridLayout.add(gameInformation, 0, 0, 2, 1);
+        gameInfoGridLayout.add(new Label("Wit"), 0, 3);
+        gameInfoGridLayout.add(playerOneScore, 0, 4);
+        gameInfoGridLayout.add(new Label("Zwart"), 1, 3);
+        gameInfoGridLayout.add(playerTwoScore, 1, 4);
+
+        FlowPane timerPaneWhite = new FlowPane();
+        whiteTimer = new Text();
+        whiteTimer.setFont(new Font(30));
+        whiteTimer.setText("10");
+        whiteTimer.setFill(Color.BLACK);
+        timerPaneWhite.getChildren().add(whiteTimer);
+
+        FlowPane timerPaneBlack = new FlowPane();
+        blackTimer = new Text();
+        blackTimer.setFont(new Font(30));
+        blackTimer.setText("10");
+        blackTimer.setFill(Color.BLACK);
+        timerPaneBlack.getChildren().add(blackTimer);
+
+        gameInfoGridLayout.add(timerPaneWhite, 0, 5);
+        gameInfoGridLayout.add(timerPaneBlack, 1, 5);
+
+        mainLayout.setRight(gameInfoGridLayout);
+
+        Button backButton = new Button("Terug/Opgeven");
+        backButton.setTranslateX(0);
+        backButton.setTranslateY(375);
+        backButton.setOnAction(e -> controller.switchScene("LobbyScene", "Lobby"));
+
+        mainLayout.setBottom(backButton);
+
+        return mainLayout;
+    }
+
+    public void updateGameInfoDisplay(String text) {
+        gameInformation.appendText(text + "\n");
+    }
+
+    public void updatePlayerscores(int playerOne, int playerTwo) {
+        playerOneScore.setText("" + playerOne);
+        playerTwoScore.setText("" + playerTwo);
+    }
+
+    public void updateWhiteTimer(String time) {
+        blackTimer.setText("");
+        whiteTimer.setText(time);
+    }
+
+    public void updateBlackTimer(String time) {
+        whiteTimer.setText("");
+        blackTimer.setText(time);
     }
 
     public List<Tile> getTiles() {

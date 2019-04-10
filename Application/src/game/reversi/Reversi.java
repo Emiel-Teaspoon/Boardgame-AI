@@ -1,12 +1,16 @@
 package game.reversi;
 
+import boardgame.BoardGameController;
 import game.Game;
 import game.Player;
+import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 
 import java.util.*;
 
 public class Reversi extends Game implements boardgame.Game {
+
+    private BoardGameController controller;
 
     private ReversiBoard board;
     private ReversiPlayer currentPlayer;
@@ -16,8 +20,9 @@ public class Reversi extends Game implements boardgame.Game {
     private int timer = 10;
     Thread timerThread;
 
-    public Reversi(ReversiPlayer player1, ReversiPlayer player2) {
+    public Reversi(ReversiPlayer player1, ReversiPlayer player2, BoardGameController controller) {
         super(player1, player2);
+        this.controller = controller;
         scores = new HashMap<>();
         player1.setReversi(this);
         player2.setReversi(this);
@@ -25,7 +30,7 @@ public class Reversi extends Game implements boardgame.Game {
         scores.put(player1, 2);
         scores.put(player2, 2);
 
-        board = new ReversiBoard(8, 8, this);
+        board = new ReversiBoard(8, 8, this, controller);
 
         board.setPlayer(player1);
         setCurrentPlayer(player1);
@@ -39,9 +44,16 @@ public class Reversi extends Game implements boardgame.Game {
                 try {
                     Thread.sleep(1000);
                     timer--;
+                    Platform.runLater(() -> {
+                        if (currentPlayer.getColor() == Player.Color.WHITE) {
+                            board.updateWhiteTimer("" + timer);
+                        } else {
+                            board.updateBlackTimer("" + timer);
+                        }
+                    });
                     if(timer <= 0) {
                         passMove(null);
-                        System.out.println("Took too long, next player");
+                        board.updateGameInfoDisplay("Tijd is op. Volgende speler is aan de beurt.");
                     }
                 }
                 catch (InterruptedException e) {
@@ -262,34 +274,58 @@ public class Reversi extends Game implements boardgame.Game {
     void passMove(ReversiMove move) {
         if(move == null) {
             board.updateBoard();
-        }
-        else {
+        } else {
             if(move.getPlayer() == player1) {
-                scores.replace(player1, scores.get(player1) + move.getActualScore());
-                scores.replace(player2, scores.get(player2) - (move.getActualScore() - 1));
+                int playerOneScore = scores.get(player1) + move.getActualScore();
+                int playerTwoScore = scores.get(player2) - (move.getActualScore() - 1);
+
+                scores.replace(player1, playerOneScore);
+                scores.replace(player2, playerTwoScore);
+
+                Platform.runLater(() -> board.updatePlayerscores(playerOneScore, playerTwoScore));
             }
             else {
-                scores.replace(player2, scores.get(player2) + move.getActualScore());
-                scores.replace(player1, scores.get(player1) - (move.getActualScore() - 1));
+                int playerOneScore = scores.get(player1) - (move.getActualScore() - 1);
+                int playerTwoScore = scores.get(player2) + move.getActualScore();
+
+                scores.replace(player2, playerTwoScore);
+                scores.replace(player1, playerOneScore);
+
+                Platform.runLater(() -> board.updatePlayerscores(playerOneScore, playerTwoScore));
             }
             board.displayMove(move);
 
         }
         if(!isGameFinished()) {
-            System.out.println(Arrays.toString(scores.entrySet().toArray()));
+            if (currentPlayer == player1) {
+                if (move != null) {
+                    board.updateGameInfoDisplay("Wit heeft " + move.getActualScore() + " punten gekregen.");
+                } else {
+                    board.updateGameInfoDisplay("Wit heeft deze beurt geen zet gedaan.");
+                }
+            } else {
+                if (move != null) {
+                    board.updateGameInfoDisplay("Zwart heeft " + move.getActualScore() + " punten gekregen.");
+                } else {
+                    board.updateGameInfoDisplay("Zwart heeft deze beurt geen zet gedaan.");
+                }
+            }
             setCurrentPlayer(getCurrentPlayer() == player1 ? (ReversiPlayer) player2 : (ReversiPlayer) player1);
         }
         else {
-            System.out.println("GAME FINISHED");
+            board.updateGameInfoDisplay("-----Spel geëindigd-----");
 
             int score1 = scores.get(player1);
             int score2 = scores.get(player2);
 
             if(score1 == score2) {
-                System.out.println("Tied!");
+                board.updateGameInfoDisplay("Tied!");
             }
             else {
-                System.out.println(score1 > score2 ? String.format("%s wins with %s to %s", player1.getColor().name(), score1, score2) : String.format("%s wins with %s to %s", player2.getColor().name(), score2, score1));
+                board.updateGameInfoDisplay(score1 > score2 ?
+                        String.format("%s heeft gewonnen met %s tegen %s", player1.getColor().name(), score1, score2) :
+                        String.format("%s heeft gewonnen met %s tegen %s", player2.getColor().name(), score2, score1)
+                );
             }
         }
     }
@@ -329,6 +365,13 @@ public class Reversi extends Game implements boardgame.Game {
 
     public void setCurrentPlayer(ReversiPlayer currentPlayer) {
         if(this.currentPlayer != currentPlayer) {
+            Platform.runLater(() -> {
+                if (currentPlayer.getColor() == Player.Color.WHITE) {
+                    board.updateWhiteTimer("" + timer);
+                } else {
+                    board.updateBlackTimer("" + timer);
+                }
+            });
             startTimer();
             this.currentPlayer = currentPlayer;
             if(currentPlayer instanceof ReversiAI) {
