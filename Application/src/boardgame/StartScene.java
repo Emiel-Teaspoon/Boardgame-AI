@@ -128,9 +128,7 @@ public class StartScene {
         onlinePlayButton.setOnAction(e -> {
             if (nameField.getText().length() > 2 && nameField.getText().length() < 13) {
                 model.setName(nameField.getText());
-                //controller.establishConnection();
                 controller.createLobbyScene();
-                //controller.updatePlayerList();
                 controller.switchScene("LobbyScene", "Lobby");
                 errorText.setText("");
             } else {

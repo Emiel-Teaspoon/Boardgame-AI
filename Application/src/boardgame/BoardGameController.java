@@ -5,6 +5,7 @@ import game.Player;
 import game.reversi.Reversi;
 import game.reversi.ReversiAI;
 import game.reversi.ReversiPlayer;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -14,6 +15,8 @@ import java.util.HashMap;
 public class BoardGameController {
 
     private Stage primaryStage;
+
+    private LobbyScene lobbyScene;
 
     private StartModel startModel;
     private SettingsModel settingsModel;
@@ -30,6 +33,8 @@ public class BoardGameController {
 
         startModel = new StartModel();
         settingsModel = new SettingsModel();
+        lobbyModel = new LobbyModel(this);
+        lobbyScene = new LobbyScene(this, lobbyModel);
 
         StartScene startScene = new StartScene(this, startModel);
 
@@ -46,11 +51,7 @@ public class BoardGameController {
     }
 
     public void createLobbyScene() {
-        if (lobbyModel == null) {
-            lobbyModel = new LobbyModel(this);
-            LobbyScene lobbyScene = new LobbyScene(this, lobbyModel);
             scenes.put("LobbyScene", lobbyScene.getScene());
-        }
     }
 
     /**
@@ -66,7 +67,9 @@ public class BoardGameController {
         switch (message.get("type")) {
             case "CHALLENGE":
                 // Contains keys: challenger, challengenumber, gametype
-                System.out.println("challenged");
+                Platform.runLater(() -> lobbyScene.createChallenge(message.get("CHALLENGER"), message.get("CHALLENGENUMBER"), message.get("GAMETYPE")));
+                System.out.println(message.get("gametype"));
+                System.out.println(message.keySet().toString());
             case "MATCH":
                 // Contains keys
                 // TODO: add better check
