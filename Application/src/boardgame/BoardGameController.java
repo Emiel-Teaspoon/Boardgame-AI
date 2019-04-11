@@ -7,6 +7,8 @@ import game.reversi.ReversiAI;
 import game.reversi.ReversiPlayer;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.io.*;
+import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ public class BoardGameController {
 
     private HashMap<String, Scene> scenes = new HashMap<>();
     private HashMap<String, Game> games = new HashMap<>();
+    private HashMap<String, String> settingsMap = new HashMap<String, String>();
 
     private ConnectionHandler connectionHandler;
 
@@ -132,5 +135,72 @@ public class BoardGameController {
 
     public ConnectionHandler getConnectionHandler() {
         return connectionHandler;
+    }
+
+    /**
+     * Hieronder staan alle functies die worden gebruikt om de Username, IPAdress en Gateway op te slaan in een file.
+     */
+
+    public void saveSettings(){
+        File settings = new File("settings.ser");
+        try {
+            ObjectOutputStream settingsOut = new ObjectOutputStream(new FileOutputStream(settings));
+            settingsOut.writeObject(settingsMap);
+            settingsOut.close();
+        }catch(IOException ex){
+            System.out.println(ex.toString());
+            System.out.println("Bestand is niet opgeslagen");
+        }
+    }
+
+    //Update de hashmap met de gegevens die in de .ser staan.
+    public void loadSettings(){
+        //TODO: clean up
+        try
+        {
+            ObjectInputStream settingsIn = new ObjectInputStream(new FileInputStream("settings.ser"));
+            settingsMap = (HashMap) settingsIn.readObject();
+            settingsIn.close();
+        }catch(IOException ioe)
+        {
+            System.out.println(ioe.toString());
+            System.out.println("Bestand is niet gevonden");
+        }catch(ClassNotFoundException c)
+        {
+            System.out.println(c.toString());
+        }
+    }
+
+    public String getSettingsIp(){
+        loadSettings();
+        return settingsMap.get("IPAddress");
+    }
+
+    public String getSettingsGateway(){
+        loadSettings();
+        return settingsMap.get("Gateway");
+    }
+
+    public String getSettingsName(){
+        loadSettings();
+        return settingsMap.get("Username");
+    }
+
+    public void setSettingsIp(String IP){
+        loadSettings();
+        settingsMap.put("IPAddress", IP);
+        saveSettings();
+    }
+
+    public void setSettingsGateway(String gateway){
+        loadSettings();
+        settingsMap.put("Gateway", gateway);
+        saveSettings();
+    }
+
+    public void setSettingsName(String name){
+        loadSettings();
+        settingsMap.put("Username", name);
+        saveSettings();
     }
 }
