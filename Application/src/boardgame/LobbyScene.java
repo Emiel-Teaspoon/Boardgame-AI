@@ -2,12 +2,15 @@ package boardgame;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 public class LobbyScene {
 
@@ -17,6 +20,8 @@ public class LobbyScene {
     private BorderPane mainLayout;
     private HBox buttonLayoutRight;
     private HBox buttonLayoutLeft;
+    private ScrollPane challengeLayout;
+    private VBox scrollPaneContainer;
 
     private ListView<String> playerOverview;
     private ComboBox<String> gameListing;
@@ -68,8 +73,19 @@ public class LobbyScene {
 
         buttonLayoutLeft = new HBox();
         buttonLayoutLeft.setAlignment(Pos.CENTER_LEFT);
-        buttonLayoutLeft.getChildren().addAll(backButton);
+
+        Button testButton = new Button("Testing");
+        //testButton.setOnAction(e -> createChallenge("Bob", "Reversi"));
+
+        buttonLayoutLeft.getChildren().addAll(backButton, testButton);
         mainLayout.setLeft(buttonLayoutLeft);
+
+        scrollPaneContainer = new VBox();
+        challengeLayout = new ScrollPane(scrollPaneContainer);
+        challengeLayout.setMaxHeight(150);
+        challengeLayout.setMinHeight(150);
+
+        mainLayout.setBottom(challengeLayout);
     }
 
     private void createActionListeners() {
@@ -84,5 +100,10 @@ public class LobbyScene {
             controller.prepareGameScene();
             controller.switchScene("GameScene", "Reversi");
         });
+    }
+
+    public void createChallenge(String challenger, String challengeNumber, String selectedGame) {
+        Challenge challenge = new Challenge(challenger, challengeNumber, selectedGame, scrollPaneContainer);
+        scrollPaneContainer.getChildren().add(challenge.createChallengeGraphic());
     }
 }

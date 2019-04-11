@@ -132,7 +132,6 @@ public class StartScene {
                 controller.setSettingsName(nameField.getText());
                 //controller.establishConnection();
                 controller.createLobbyScene();
-                //controller.updatePlayerList();
                 controller.switchScene("LobbyScene", "Lobby");
                 errorText.setText("");
             } else {

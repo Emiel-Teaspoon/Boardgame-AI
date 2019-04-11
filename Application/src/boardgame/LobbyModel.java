@@ -14,6 +14,7 @@ public class LobbyModel {
 
     private ObservableList<String> playerList;
     private ObservableList<String> gameList;
+    private HashMap<String, Challenge> challenges;
 
     private String selectedGame;
     private String chosenOpponent;
@@ -116,6 +117,7 @@ public class LobbyModel {
 
     public void setChosenOpponent(String chosenOpponent) {
         this.chosenOpponent = chosenOpponent;
+        System.out.println(chosenOpponent);
     }
 
     /**
