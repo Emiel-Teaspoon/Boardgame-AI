@@ -56,6 +56,7 @@ public class Connection implements Runnable {
             while (running) {
                 message = reader.readLine();
                 if (message != null) {
+                    System.out.println(">>From Server: \'" + message + "\'");
                     if (message.equals("OK") || message.startsWith("ERR")) {
                         okReceived = true;
                     } else if (message.startsWith("SVR GAMELIST") || message.startsWith("SVR PLAYERLIST")) {
@@ -88,6 +89,7 @@ public class Connection implements Runnable {
      */
     public void write(String command) {
         try {
+            System.out.println("<<To Server:   \'" + command + "\'");
             writer.write(command + "\n");
             writer.flush();
         } catch (IOException e) {

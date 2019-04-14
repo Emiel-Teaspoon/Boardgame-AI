@@ -74,7 +74,6 @@ public class ConnectionHandler {
     }
 
     public boolean subscribe(String game) {
-        System.out.println("subscribing");
         return connection.request("subscribe " + game);
     }
 
@@ -107,7 +106,6 @@ public class ConnectionHandler {
     public ArrayList<String> getPlayerList() {
         String answer = connection.get("playerlist");
         if (answer == null) {
-            System.out.println("null in getPlayerList()");
             return null;
         }
         return parseList(answer);
@@ -120,13 +118,9 @@ public class ConnectionHandler {
      */
     public void handleGameMessage(String message) {
         message = message.substring(9);
-        System.out.println(message);
         String command = message.substring(0, message.indexOf('{')-1);
 
-        System.out.println(message);
         message = message.substring(message.indexOf('{') + 1, message.indexOf('}'));
-        System.out.println(command);
-        System.out.println(message);
 
         HashMap<String, String> messageMap = new HashMap<>();
         messageMap.put("type", command);
