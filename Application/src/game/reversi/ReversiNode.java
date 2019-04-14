@@ -27,4 +27,9 @@ public class ReversiNode extends Node {
     public String toString() {
         return String.valueOf("ABCDEFGH".charAt(x)) + (y + 1);
     }
+
+    @Override
+    public String toServerInput() {
+        return String.valueOf(y*8 + x);
+    }
 }

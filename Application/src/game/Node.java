@@ -57,4 +57,8 @@ public class Node {
     public static Direction getDirection(Node origin, Node dir) {
         return new Direction(dir.getX() - origin.getX(), dir.getY() - origin.getY());
     }
+
+    public String toServerInput() {
+        return String.valueOf("0");
+    }
 }

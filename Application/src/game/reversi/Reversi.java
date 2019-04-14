@@ -1,7 +1,7 @@
 package game.reversi;
 
-import boardgame.BoardGameController;
 import client.ClientModel;
+import client.handlers.ConnectionHandler;
 import game.Game;
 import game.Player;
 import javafx.application.Platform;
@@ -17,6 +17,9 @@ public class Reversi extends Game {
     private ReversiPlayer currentPlayer;
     private List<ReversiMove> currentPossibleMoves;
     private HashMap<Player, Integer> scores;
+    private ConnectionHandler connectionHandler;
+
+    private boolean isOpponent;
 
     private int timer = 10;
     Thread timerThread;
@@ -37,6 +40,25 @@ public class Reversi extends Game {
         setCurrentPlayer(player1);
     }
 
+    public Reversi(ReversiPlayer player1, ReversiPlayer player2, ClientModel controller, ConnectionHandler handler, boolean isOppenent) {
+        super(player1, player2);
+        this.controller = controller;
+        this.isOpponent = isOppenent;
+        scores = new HashMap<>();
+        player1.setReversi(this);
+        player2.setReversi(this);
+
+        scores.put(player1, 2);
+        scores.put(player2, 2);
+
+        board = new ReversiBoard(8, 8, this, controller);
+
+        board.setPlayer(isOppenent ? player1 : player2);
+        setCurrentPlayer(isOppenent ? player1 : player2);
+
+        this.connectionHandler = handler;
+    }
+
     void startTimer() {
         stopTimer();
         timerThread = new Thread(() -> {
@@ -53,7 +75,7 @@ public class Reversi extends Game {
                         }
                     });
                     if (timer <= 0) {
-                        passMove(null);
+                        passMove(new ReversiMove(currentPlayer, null));
                         board.updateGameInfoDisplay("Tijd is op. Volgende speler is aan de beurt.");
                     }
                 } catch (InterruptedException e) {
@@ -268,7 +290,16 @@ public class Reversi extends Game {
     void passMove(ReversiMove move) {
         if (move == null) {
             board.updateBoard();
-        } else {
+        }
+        else {
+            if(move.getNode() == null) {
+                board.updateBoard();
+                return;
+            }
+            if(connectionHandler != null && move.getPlayer() == player1) {
+                connectionHandler.move(move.getNode().toServerInput());
+                System.out.println(move.getNode().toServerInput());
+            }
             if (move.getPlayer() == player1) {
                 int playerOneScore = scores.get(player1) + move.getActualScore();
                 int playerTwoScore = scores.get(player2) - (move.getActualScore() - 1);
@@ -287,7 +318,6 @@ public class Reversi extends Game {
                 Platform.runLater(() -> board.updatePlayerscores(playerOneScore, playerTwoScore));
             }
             board.displayMove(move);
-
         }
         if (!isGameFinished()) {
             if (currentPlayer == player1) {
@@ -324,29 +354,39 @@ public class Reversi extends Game {
     // TODO: (optional) move to abstract class and make special abstract functions?
     // TODO: add what needs to happen with each case
     public void handleMessage(HashMap<String, String> message) {
+        System.out.println("___________________________");
+        System.out.println(Arrays.toString(message.entrySet().toArray()));
         switch (message.get("type")) {
-            case "MATCH":
-                // When the match starts
-                // Contains keys: playertomove, gametype, opponent
-                break;
             case "MOVE":
                 // Contains keys: player, move, details
-                break;
+                System.out.println("MOVE!!!!!!!!!!!!!");
+                System.out.println(message.get("PLAYER"));
+                String move = message.get("MOVE");
+                if(move != null) {
+                    passMove(move, player2);
+                }
+                System.out.println(message.get("DETAILS"));
+                System.out.println("ENDMOVE!!!!!!!!!!!!!");
             case "WIN":
-                // The player won
-                // Contains keys: playeronescore, playertwoscore, comment
+                System.out.println(message.get("PLAYERONESCORE"));
+                System.out.println(message.get("PLAYERTWOSCORE"));
+                System.out.println(message.get("COMMENT"));
                 break;
             case "LOSE":
-                // The player lost
-                // Contains keys: playeronescore, playertwoscore, comment
+                System.out.println(message.get("PLAYERONESCORE"));
+                System.out.println(message.get("PLAYERTWOSCORE"));
+                System.out.println(message.get("COMMENT"));
                 break;
             case "DRAW":
-                // The player lost
-                // Contains keys: playeronescore, playertwoscore, comment
+                System.out.println(message.get("PLAYERONESCORE"));
+                System.out.println(message.get("PLAYERTWOSCORE"));
+                System.out.println(message.get("COMMENT"));
                 break;
             default:
+                System.err.println("message not valid");
                 break;
         }
+        System.out.println("___________________________");
     }
 
     @Override
@@ -357,48 +397,6 @@ public class Reversi extends Game {
     @Override
     public HashMap<Player, Integer> scores() {
         return scores;
-    }
-
-    /**
-     * Gets a message from the server and handles it
-     *
-     * @param message HashMap containing data from the Servermessage
-     */
-    @Override
-    public void message(HashMap<String, String> message) {
-        switch (message.get("type")) {
-            case "MOVE":
-                // Contains keys: player, move, details
-                System.out.println(message.get("player"));
-                System.out.println(message.get("move"));
-                System.out.println(message.get("details"));
-                break;
-            case "WIN":
-                // The player won
-                // Contains keys: playeronescore, playertwoscore, comment
-                System.out.println(message.get("playeronescore"));
-                System.out.println(message.get("playertwoscore"));
-                System.out.println(message.get("comment"));
-                break;
-            case "LOSE":
-                // The player lost
-                // Contains keys: playeronescore, playertwoscore, comment
-                System.out.println(message.get("playeronescore"));
-                System.out.println(message.get("playertwoscore"));
-                System.out.println(message.get("comment"));
-                break;
-            case "DRAW":
-                // The player lost
-                // Contains keys: playeronescore, playertwoscore, comment
-                System.out.println(message.get("playeronescore"));
-                System.out.println(message.get("playertwoscore"));
-                System.out.println(message.get("comment"));
-                break;
-            default:
-                // message is not valid, (ignore or exception?)
-                System.err.println("message not valid");
-                break;
-        }
     }
 
     public ReversiBoard getBoard() {
@@ -418,6 +416,19 @@ public class Reversi extends Game {
 
             if (movex == x && movey == y) {
                 result = move;
+            }
+        }
+
+        passMove(result);
+    }
+
+    public void passMove(String move, Player player) {
+        ReversiMove result = null;
+        currentPlayer = (ReversiPlayer) player;
+        currentPossibleMoves = getPossibleMoves(currentPlayer);
+        for (ReversiMove possibleMove : currentPossibleMoves) {
+            if(move.equals(possibleMove.getNode().toServerInput())) {
+                result = possibleMove;
             }
         }
 
@@ -461,5 +472,9 @@ public class Reversi extends Game {
         }
 
         return isFinished;
+    }
+
+    public boolean isOpponent() {
+        return isOpponent;
     }
 }

@@ -69,6 +69,9 @@ public class ClientModel {
     }
 
     public void handleMessage(HashMap<String, String> message) {
+        if(reversiGame != null) {
+            reversiGame.handleMessage(message);
+        }
         switch (message.get("type")) {
             case "CHALLENGE":
                 // Contains keys: challenger, challengenumber, gametype
@@ -82,7 +85,7 @@ public class ClientModel {
             case "MATCH":
                 // Contains keys
                 System.out.println("Match starting");
-                prepareGameScene(message.get("PLAYERTOMOVE"), message.get("OPPONENT"));
+                prepareGameScene(settingsHandler.getSettings().get("name"), message.get("OPPONENT"), message.get("PLAYERTOMOVE"));
                 // TODO: add better check
                 //if (lobbyModel != null) lobbyModel.message(message);
                 break;
@@ -98,7 +101,6 @@ public class ClientModel {
                 // The player lost
                 // Contains keys: playeronescore, playertwoscore, comment
             case "YOURTURN":
-                reversiGame.handleMessage(message);
                 //TODO: Add better check;
                 //if (gameModel != null) gameModel.getCurrentGame().message(message);
                 break;
@@ -107,13 +109,10 @@ public class ClientModel {
         }
     }
 
-    public void prepareGameScene(String player1, String opponent) {
-        String player2;
-        String thisPlayer = getSettings().get("name");
-        if (player1.equals(thisPlayer)) {
-            player2 = opponent;
-        } else {
-            player2 = thisPlayer;
+    public void prepareGameScene(String me, String opponent, String playerToMove) {
+        boolean isOpponent = false;
+        if (playerToMove.equals(opponent)) {
+            isOpponent = true;
         }
         //TODO Voeg spelers toe aan Reversispel
         //  Onderstaande code zou moeten werken als BoardGameController in de game map wordt vervangen door ClientModel
@@ -122,12 +121,12 @@ public class ClientModel {
 
         //Game newGame = new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
 
-        reversiGame = new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this);
+        reversiGame = new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiPlayer(Player.Color.BLACK), this, connectionHandler, isOpponent);
 
         gameModel = new GameModel();
-        gameModel.setPlayerOne(player1);
+        gameModel.setPlayerOne(me);
+        gameModel.setPlayerTwo(opponent);
         gameModel.setCurrentGame(reversiGame);
-        gameModel.setPlayerTwo(player2);
 
         switchScene("game");
         gameScene.startGame(gameModel);

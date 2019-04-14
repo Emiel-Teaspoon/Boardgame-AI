@@ -87,7 +87,7 @@ public class BoardGameController {
                 // The player lost
                 // Contains keys: playeronescore, playertwoscore, comment
                 //TODO: Add better check;
-                if (gameModel != null) gameModel.getCurrentGame().message(message);
+//                 if (gameModel != null) gameModel.getCurrentGame().handleMessage(message);
                 break;
             case "YOURTURN":
 
@@ -114,7 +114,9 @@ public class BoardGameController {
         try {
             Integer.parseInt(currentInput);
             isInteger = true;
-        } catch (NumberFormatException currentException) {
+        }
+        catch (NumberFormatException currentException) {
+
         }
         return isInteger;
     }

@@ -84,7 +84,7 @@ public class StartScene extends ClientScene {
 
         btTestgame = new Button("Test AI spel");
         btTestgame.setOnAction(e -> {
-            model.prepareGameScene("henk", "ingrid");
+            model.prepareGameScene("henk", "ingrid", "henk");
         });
     }
 

@@ -1,6 +1,5 @@
 package game.reversi;
 
-import boardgame.BoardGameController;
 import client.ClientModel;
 import game.Board;
 import game.Player;
@@ -92,12 +91,18 @@ public class ReversiBoard extends Board implements Cloneable {
                 nodes.add(node);
             }
         }
-
-        getNode(3,3).assignPlayer(game.player2);
-        getNode(3,4).assignPlayer(game.player1);
-        getNode(4,3).assignPlayer(game.player1);
-        getNode(4,4).assignPlayer(game.player2);
-
+        if(game.isOpponent()) {
+            getNode(3, 3).assignPlayer(game.player1);
+            getNode(3, 4).assignPlayer(game.player2);
+            getNode(4, 3).assignPlayer(game.player2);
+            getNode(4, 4).assignPlayer(game.player1);
+        }
+        else {
+            getNode(3, 3).assignPlayer(game.player2);
+            getNode(3, 4).assignPlayer(game.player1);
+            getNode(4, 3).assignPlayer(game.player1);
+            getNode(4, 4).assignPlayer(game.player2);
+        }
         updateBoard();
 
         gameInformation = new TextArea();
