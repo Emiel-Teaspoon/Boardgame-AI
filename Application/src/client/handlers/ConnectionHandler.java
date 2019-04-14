@@ -141,11 +141,19 @@ public class ConnectionHandler {
         model.handleMessage(messageMap);
     }
 
+    /**
+     * Close the current connection
+     */
     public void disconnect() {
         connection.write("disconnect");
         isConnected = false;
     }
 
+    /**
+     * Parses a list from the server into an ArrayList<String>
+     * @param input server message
+     * @return parsed ArrayList
+     */
     private ArrayList<String> parseList(String input) {
         ArrayList<String> list = new ArrayList<>();
 

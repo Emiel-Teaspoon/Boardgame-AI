@@ -12,6 +12,9 @@ import javafx.application.Platform;
 
 import java.util.HashMap;
 
+/**
+ * A model to make and use the different scenes and handlers the program uses
+ */
 public class ClientModel {
 
     private ClientApplication application;
@@ -30,6 +33,10 @@ public class ClientModel {
     private GameModel gameModel;
     private String activeScene;
 
+    /**
+     * Constructor for the ClientModel
+     * @param application A JavaFX application
+     */
     public ClientModel(ClientApplication application) {
         this.application = application;
         initHandlers();
@@ -40,6 +47,10 @@ public class ClientModel {
         switchScene("start");
     }
 
+    /**
+     * Switches to a new scene and calls onLeave() and onEnter() methods when necessary
+     * @param scene
+     */
     public void switchScene(String scene) {
         if (!scenes.containsKey(scene)) {
             throw new IllegalStateException("Scene \"" + scene + "\" does not exist");
@@ -58,16 +69,27 @@ public class ClientModel {
         application.setScene(nextScene.getScene());
     }
 
+    /**
+     * Make a connection to the Server with the host and port from the settings
+     * @return a boolean that tells whether the connection is established
+     */
     public boolean connect() {
         String host = settingsHandler.getSettings().get("host");
         int port = Integer.parseInt(settingsHandler.getSettings().get("port"));
         return connectionHandler.connect(host, port);
     }
 
+    /**
+     * Logs in the user with the name in the settings
+     */
     public void login() {
         connectionHandler.login(settingsHandler.getSettings().get("name"));
     }
 
+    /**
+     * Takes an incoming message and sends it to the right class
+     * @param message
+     */
     public void handleMessage(HashMap<String, String> message) {
         if(reversiGame != null) {
             reversiGame.handleMessage(message);
@@ -109,6 +131,12 @@ public class ClientModel {
         }
     }
 
+    /**
+     * Used to start a game with the information the server provides
+     * @param me name of the user of this client
+     * @param opponent name of the opponent
+     * @param playerToMove name of the player that has the first turn
+     */
     public void prepareGameScene(String me, String opponent, String playerToMove) {
         boolean isOpponent = false;
         if (playerToMove.equals(opponent)) {
@@ -133,11 +161,18 @@ public class ClientModel {
     }
 
     // Inits
+
+    /**
+     * Initializes the handlers
+     */
     public void initHandlers() {
         connectionHandler = new ConnectionHandler(this);
         settingsHandler = new SettingsHandler(this);
     }
 
+    /**
+     * Initializes Scenes and puts them in the scene ArrayList
+     */
     public void initScenes() {
         gameScene = new GameScene(this);
         scenes.put("game", gameScene);
@@ -151,6 +186,10 @@ public class ClientModel {
     //
 
     // Settings
+
+    /**
+     * Sets the settings to their default values
+     */
     public void setDefaultSettings() {
        settingsHandler.defaultSettings();
     }

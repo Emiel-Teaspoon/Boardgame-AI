@@ -6,16 +6,24 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains the settings for the application and reads/writes data to file
+ */
 public class SettingsHandler {
 
     private ClientModel model;
     private HashMap<String, String> settings;
+
 
     public SettingsHandler(ClientModel model) {
         this.model = model;
         settings = getSettings();
     }
 
+    /**
+     * Getter for the settings
+     * @return HashMap with the settings
+     */
     public HashMap<String, String> getSettings() {
         loadSettings();
         // If file doesn't exist return defaultSettings;
@@ -26,6 +34,9 @@ public class SettingsHandler {
         return settings;
     }
 
+    /**
+     * Sets the settings to default values
+     */
     public void defaultSettings() {
         settings = new HashMap<>();
         settings.put("name", "Naam");
@@ -34,6 +45,10 @@ public class SettingsHandler {
         saveSettings();
     }
 
+    /**
+     * Takes in a HashMap and puts its items in thee settings, then saves the settings
+     * @param newSettings HashMap with new settings
+     */
     public void updateSettings(HashMap<String, String> newSettings) {
         loadSettings();
         System.out.println("Updating settings\n Current settings = " + settings.toString());
@@ -47,6 +62,9 @@ public class SettingsHandler {
         saveSettings();
     }
 
+    /**
+     * Writes the settings to a file "settings.ser"
+     */
     public void saveSettings(){
         File settingsFile = new File("settings.ser");
         try {
@@ -59,6 +77,9 @@ public class SettingsHandler {
         }
     }
 
+    /**
+     * Reads settings from "settings.ser"
+     */
     public void loadSettings(){
         try
         {
