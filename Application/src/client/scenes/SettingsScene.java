@@ -98,7 +98,7 @@ public class SettingsScene extends ClientScene {
         buildButtons();
         buildLayoutManagers();
 
-        scene = new Scene(mainLayout, 1080, 720);
+        scene = new Scene(mainLayout, 640, 480);
     }
 
     @Override

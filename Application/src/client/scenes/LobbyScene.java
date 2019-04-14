@@ -100,7 +100,7 @@ public class LobbyScene extends ClientScene {
         buildNodes();
         buildLayoutManagers();
 
-        scene = new Scene(mainLayout, 1080, 720);
+        scene = new Scene(mainLayout, 640, 480);
     }
 
     @Override
