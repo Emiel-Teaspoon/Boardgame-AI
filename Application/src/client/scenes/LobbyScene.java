@@ -106,10 +106,14 @@ public class LobbyScene extends ClientScene {
     @Override
     public void onEnter() {
         if (!model.getConnection().isConnected()) {
-            model.connect();
+            if (!model.connect()) {
+                model.switchScene("start");
+                System.out.println("Could not connect to server");
+                //TODO Display in GUI that connenction could not be established
+                return;
+            }
             model.login();
         }
-        //TODO: check if logged in
 
         updateGameList();
         lobbyUpdater = new LobbyUpdater(this, model.getConnection());
@@ -121,7 +125,6 @@ public class LobbyScene extends ClientScene {
         if (lobbyUpdater != null) {
             lobbyUpdater.close();
         }
-        // TODO: Stop lobby updater
     }
 
     private void buildButtons() {
