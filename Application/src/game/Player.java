@@ -6,9 +6,11 @@ public class Player {
 
     private int score;
     private Color color;
+    private boolean isPlayable;
 
-    public Player(Color color) {
+    public Player(Color color, boolean isPlayable) {
         this.color = color;
+        this.isPlayable = isPlayable;
     }
 
     public int getScore() {
@@ -25,5 +27,13 @@ public class Player {
 
     public void doMove(Move move) {
         return;
+    }
+
+    public boolean isPlayable() {
+        return isPlayable;
+    }
+
+    public void setPlayable(boolean playable) {
+        isPlayable = playable;
     }
 }

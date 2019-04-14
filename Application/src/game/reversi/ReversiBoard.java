@@ -3,6 +3,7 @@ package game.reversi;
 import client.ClientModel;
 import game.Board;
 import game.Player;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -58,6 +59,9 @@ public class ReversiBoard extends Board implements Cloneable {
     void setPlayer(ReversiPlayer player) {
         for (Tile tile : tiles) {
             tile.setMovePossible(false);
+        }
+        if(!player.isPlayable()) {
+            return;
         }
         List<ReversiNode> nodes = new ArrayList<>();
         for (ReversiMove move : game.getPossibleMoves(player)) {
@@ -154,22 +158,22 @@ public class ReversiBoard extends Board implements Cloneable {
     }
 
     public void updateGameInfoDisplay(String text) {
-        gameInformation.appendText(text + "\n");
+        Platform.runLater(() -> gameInformation.appendText(text + "\n"));
     }
 
     public void updatePlayerscores(int playerOne, int playerTwo) {
-        playerOneScore.setText("" + playerOne);
-        playerTwoScore.setText("" + playerTwo);
+        Platform.runLater(() -> playerOneScore.setText("" + playerOne));
+        Platform.runLater(() -> playerTwoScore.setText("" + playerTwo));
     }
 
     public void updateWhiteTimer(String time) {
-        blackTimer.setText("");
-        whiteTimer.setText(time);
+        Platform.runLater(() -> blackTimer.setText(""));
+        Platform.runLater(() -> whiteTimer.setText(time));
     }
 
     public void updateBlackTimer(String time) {
-        whiteTimer.setText("");
-        blackTimer.setText(time);
+        Platform.runLater(() -> whiteTimer.setText(""));
+        Platform.runLater(() -> blackTimer.setText(time));
     }
 
     public List<Tile> getTiles() {

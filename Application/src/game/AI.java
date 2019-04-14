@@ -2,8 +2,8 @@ package game;
 
 public class AI extends Player {
 
-    public AI(Color color) {
-        super(color);
+    public AI(Color color, boolean isPlayable) {
+        super(color, isPlayable);
     }
 
     @Override

@@ -20,6 +20,7 @@ public class Reversi extends Game {
     private ConnectionHandler connectionHandler;
 
     private boolean isOpponent;
+    private boolean isFinished = false;
 
     private int timer = 10;
     Thread timerThread;
@@ -37,13 +38,13 @@ public class Reversi extends Game {
         board = new ReversiBoard(8, 8, this, controller);
 
         board.setPlayer(player1);
-        setCurrentPlayer(player1);
+        setCurrentPlayer(player1,true);
     }
 
-    public Reversi(ReversiPlayer player1, ReversiPlayer player2, ClientModel controller, ConnectionHandler handler, boolean isOppenent) {
+    public Reversi(ReversiPlayer player1, ReversiPlayer player2, ClientModel controller, ConnectionHandler handler, boolean isOpponent) {
         super(player1, player2);
         this.controller = controller;
-        this.isOpponent = isOppenent;
+        this.isOpponent = isOpponent;
         scores = new HashMap<>();
         player1.setReversi(this);
         player2.setReversi(this);
@@ -53,8 +54,10 @@ public class Reversi extends Game {
 
         board = new ReversiBoard(8, 8, this, controller);
 
-        board.setPlayer(isOppenent ? player1 : player2);
-        setCurrentPlayer(isOppenent ? player1 : player2);
+        player2.setPlayable(false);
+
+        board.setPlayer(isOpponent ? player1 : player2);
+        setCurrentPlayer(isOpponent ? player1 : player2, true);
 
         this.connectionHandler = handler;
     }
@@ -333,7 +336,7 @@ public class Reversi extends Game {
                     board.updateGameInfoDisplay("Zwart heeft deze beurt geen zet gedaan.");
                 }
             }
-            setCurrentPlayer(getCurrentPlayer() == player1 ? (ReversiPlayer) player2 : (ReversiPlayer) player1);
+            setCurrentPlayer(getCurrentPlayer() == player1 ? (ReversiPlayer) player2 : (ReversiPlayer) player1, true);
         } else {
             board.updateGameInfoDisplay("-----Spel geëindigd-----");
 
@@ -354,39 +357,43 @@ public class Reversi extends Game {
     // TODO: (optional) move to abstract class and make special abstract functions?
     // TODO: add what needs to happen with each case
     public void handleMessage(HashMap<String, String> message) {
-        System.out.println("___________________________");
+        System.out.println("\n___________________________");
         System.out.println(Arrays.toString(message.entrySet().toArray()));
         switch (message.get("type")) {
             case "MOVE":
                 // Contains keys: player, move, details
-                System.out.println("MOVE!!!!!!!!!!!!!");
+                System.out.println("MOVE");
                 System.out.println(message.get("PLAYER"));
                 String move = message.get("MOVE");
                 if(move != null) {
                     passMove(move, player2);
                 }
                 System.out.println(message.get("DETAILS"));
-                System.out.println("ENDMOVE!!!!!!!!!!!!!");
             case "WIN":
                 System.out.println(message.get("PLAYERONESCORE"));
                 System.out.println(message.get("PLAYERTWOSCORE"));
                 System.out.println(message.get("COMMENT"));
+                setFinished(true);
                 break;
             case "LOSE":
                 System.out.println(message.get("PLAYERONESCORE"));
                 System.out.println(message.get("PLAYERTWOSCORE"));
                 System.out.println(message.get("COMMENT"));
+                setFinished(true);
                 break;
             case "DRAW":
                 System.out.println(message.get("PLAYERONESCORE"));
                 System.out.println(message.get("PLAYERTWOSCORE"));
                 System.out.println(message.get("COMMENT"));
+                setFinished(true);
                 break;
+            case "YOURTURN":
+                setCurrentPlayer((ReversiPlayer) player1, true);
             default:
                 System.err.println("message not valid");
                 break;
         }
-        System.out.println("___________________________");
+        System.out.println("___________________________\n");
     }
 
     @Override
@@ -435,8 +442,8 @@ public class Reversi extends Game {
         passMove(result);
     }
 
-    public void setCurrentPlayer(ReversiPlayer currentPlayer) {
-        if (this.currentPlayer != currentPlayer) {
+    public void setCurrentPlayer(ReversiPlayer currentPlayer, boolean hard) {
+        if (this.currentPlayer != currentPlayer || hard) {
             Platform.runLater(() -> {
                 if (currentPlayer.getColor() == Player.Color.WHITE) {
                     board.updateWhiteTimer("" + timer);
@@ -462,16 +469,20 @@ public class Reversi extends Game {
     }
 
     public boolean isGameFinished() {
-        boolean isFinished = false;
-        List<ReversiMove> possibleMoves1 = getPossibleMoves(player1);
-        List<ReversiMove> possibleMoves2 = getPossibleMoves(player2);
+        if(!isFinished) {
+            List<ReversiMove> possibleMoves1 = getPossibleMoves(player1);
+            List<ReversiMove> possibleMoves2 = getPossibleMoves(player2);
 
-        if (possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) {
-            isFinished = true;
-            stopTimer();
+            if (possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) {
+                isFinished = true;
+                stopTimer();
+            }
         }
-
         return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 
     public boolean isOpponent() {

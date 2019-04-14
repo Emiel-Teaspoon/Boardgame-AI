@@ -7,8 +7,8 @@ import java.util.List;
 
 public class ReversiAI extends ReversiPlayer {
 
-    public ReversiAI(Color color) {
-        super(color);
+    public ReversiAI(Color color, boolean isPlayable) {
+        super(color, isPlayable);
     }
 
     public void play() {

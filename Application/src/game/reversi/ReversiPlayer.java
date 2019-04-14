@@ -7,8 +7,8 @@ public class ReversiPlayer extends Player {
 
     Reversi reversi;
 
-    public ReversiPlayer(Color color) {
-        super(color);
+    public ReversiPlayer(Color color, boolean isPlayable) {
+        super(color, isPlayable);
     }
 
     public void setReversi(Reversi reversi) {
