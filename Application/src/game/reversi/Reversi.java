@@ -1,6 +1,7 @@
 package game.reversi;
 
 import boardgame.BoardGameController;
+import client.ClientModel;
 import game.Game;
 import game.Player;
 import javafx.application.Platform;
@@ -10,7 +11,7 @@ import java.util.*;
 
 public class Reversi extends Game {
 
-    private BoardGameController controller;
+    private ClientModel controller;
 
     private ReversiBoard board;
     private ReversiPlayer currentPlayer;
@@ -20,7 +21,7 @@ public class Reversi extends Game {
     private int timer = 10;
     Thread timerThread;
 
-    public Reversi(ReversiPlayer player1, ReversiPlayer player2, BoardGameController controller) {
+    public Reversi(ReversiPlayer player1, ReversiPlayer player2, ClientModel controller) {
         super(player1, player2);
         this.controller = controller;
         scores = new HashMap<>();
@@ -368,21 +369,34 @@ public class Reversi extends Game {
         switch (message.get("type")) {
             case "MOVE":
                 // Contains keys: player, move, details
+                System.out.println(message.get("player"));
+                System.out.println(message.get("move"));
+                System.out.println(message.get("details"));
                 break;
             case "WIN":
                 // The player won
                 // Contains keys: playeronescore, playertwoscore, comment
+                System.out.println(message.get("playeronescore"));
+                System.out.println(message.get("playertwoscore"));
+                System.out.println(message.get("comment"));
                 break;
             case "LOSE":
                 // The player lost
                 // Contains keys: playeronescore, playertwoscore, comment
+                System.out.println(message.get("playeronescore"));
+                System.out.println(message.get("playertwoscore"));
+                System.out.println(message.get("comment"));
                 break;
             case "DRAW":
                 // The player lost
                 // Contains keys: playeronescore, playertwoscore, comment
+                System.out.println(message.get("playeronescore"));
+                System.out.println(message.get("playertwoscore"));
+                System.out.println(message.get("comment"));
                 break;
             default:
                 // message is not valid, (ignore or exception?)
+                System.err.println("message not valid");
                 break;
         }
     }

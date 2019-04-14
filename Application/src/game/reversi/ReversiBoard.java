@@ -1,6 +1,7 @@
 package game.reversi;
 
 import boardgame.BoardGameController;
+import client.ClientModel;
 import game.Board;
 import game.Player;
 import javafx.geometry.Pos;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class ReversiBoard extends Board implements Cloneable {
 
-    private BoardGameController controller;
+    private ClientModel controller;
 
     private List<ReversiNode> nodes;
     private List<Tile> tiles;
@@ -35,7 +36,7 @@ public class ReversiBoard extends Board implements Cloneable {
 
     private Reversi game;
 
-    public ReversiBoard(int width, int height, Reversi game, BoardGameController controller) {
+    public ReversiBoard(int width, int height, Reversi game, ClientModel controller) {
         super(width, height);
         this.game = game;
         this.controller = controller;
@@ -140,7 +141,7 @@ public class ReversiBoard extends Board implements Cloneable {
         Button backButton = new Button("Terug/Opgeven");
         backButton.setTranslateX(0);
         backButton.setTranslateY(375);
-        backButton.setOnAction(e -> controller.switchScene("LobbyScene", "Lobby"));
+        backButton.setOnAction(e -> controller.switchScene("lobby"));
 
         mainLayout.setBottom(backButton);
 

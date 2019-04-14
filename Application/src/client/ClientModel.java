@@ -72,11 +72,7 @@ public class ClientModel {
         switch (message.get("type")) {
             case "CHALLENGE":
                 // Contains keys: challenger, challengenumber, gametype
-                Platform.runLater(() -> {
-                    lobbyScene.createChallenge(message.get("CHALLENGER"),
-                            message.get("CHALLENGENUMBER"),
-                            message.get("GAMETYPE"));
-                });
+                Platform.runLater(() -> lobbyScene.createChallenge(message.get("CHALLENGER"), message.get("CHALLENGENUMBER"), message.get("GAMETYPE")));
                 System.out.println(message.get("gametype"));
                 System.out.println(message.keySet().toString());
                 break;
