@@ -16,20 +16,19 @@ public class ClientApplication extends Application {
     }
 
     public void setScene(Scene scene) {
-       Platform.runLater(() -> {
-           stage.setScene(scene);
-       });
+        Platform.runLater(() -> {
+            stage.setScene(scene);
+        });
     }
 
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
+        stage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
         new ClientModel(this);
         stage.show();
-    }
-
-    public static void main(String args) {
-        launch(args);
-        System.exit(0);
     }
 }

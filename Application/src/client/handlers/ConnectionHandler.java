@@ -32,11 +32,12 @@ public class ConnectionHandler {
         new Thread(connection).start();
 
         long starTime = System.currentTimeMillis();
-        while (!connection.isConnected() && System.currentTimeMillis() - starTime < 1000) {
+        while (!connection.isConnected()) {
             // If it takes a second, connection should be closed
             if (System.currentTimeMillis() - starTime > 1000) {
                 connection.close();
                 connection = null;
+                return false;
             }
             try {
                 Thread.sleep(1);
@@ -45,7 +46,8 @@ public class ConnectionHandler {
             }
         }
 
-        return connection == null;
+        isConnected = true;
+        return true;
     }
 
     /**
@@ -89,7 +91,7 @@ public class ConnectionHandler {
     }
 
     public boolean acceptChallenge(String number) {
-        return connection.request("challenge accept " + number);
+        return connection.request("accept " + number);
     }
 
     public void help(String command) {
@@ -147,6 +149,7 @@ public class ConnectionHandler {
 
     public void disconnect() {
         connection.write("disconnect");
+        isConnected = false;
     }
 
     private ArrayList<String> parseList(String input) {

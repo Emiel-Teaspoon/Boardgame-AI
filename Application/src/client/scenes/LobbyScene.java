@@ -2,6 +2,8 @@ package client.scenes;
 
 import client.handlers.ConnectionHandler;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -33,6 +35,7 @@ public class LobbyScene extends ClientScene {
     // GUI Items
     private Button btBack;
     private Button btSubscribe;
+    private Button btChallengePlayer;
 
     private BorderPane mainLayout;
     private HBox buttonLayoutRight;
@@ -103,10 +106,14 @@ public class LobbyScene extends ClientScene {
     @Override
     public void onEnter() {
         if (!model.getConnection().isConnected()) {
-            model.connect();
+            if (!model.connect()) {
+                model.switchScene("start");
+                System.out.println("Could not connect to server");
+                //TODO Display in GUI that connenction could not be established
+                return;
+            }
             model.login();
         }
-        //TODO: check if logged in
 
         updateGameList();
         lobbyUpdater = new LobbyUpdater(this, model.getConnection());
@@ -118,7 +125,6 @@ public class LobbyScene extends ClientScene {
         if (lobbyUpdater != null) {
             lobbyUpdater.close();
         }
-        // TODO: Stop lobby updater
     }
 
     private void buildButtons() {
@@ -131,6 +137,13 @@ public class LobbyScene extends ClientScene {
         btSubscribe.setOnAction(e -> {
             model.getConnection().subscribe("Reversi");
         });
+
+        btChallengePlayer = new Button("Daag speler uit");
+        btChallengePlayer.setOnAction(e -> {
+            if (selectedPlayer != null) {
+                model.getConnection().challenge(selectedPlayer,"Reversi");
+            }
+        });
     }
 
     private void buildLayoutManagers() {
@@ -141,7 +154,11 @@ public class LobbyScene extends ClientScene {
         HBox centerGrid = new HBox();
         centerGrid.setAlignment(Pos.TOP_CENTER);
         centerGrid.setSpacing(10);
-        centerGrid.getChildren().addAll(playerOverview, gameListing);
+        VBox challengeBox = new VBox();
+        challengeBox.getChildren().add(playerOverview);
+        challengeBox.getChildren().add(btChallengePlayer);
+        centerGrid.getChildren().addAll(challengeBox, gameListing);
+
         mainLayout.setCenter(centerGrid);
 
         buttonLayoutRight = new HBox();
@@ -171,6 +188,12 @@ public class LobbyScene extends ClientScene {
         playerOverview = new ListView<>(playerList);
         playerOverview.setMaxWidth(150);
         playerOverview.setMaxHeight(250);
+        playerOverview.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                selectedPlayer = newValue;
+            }
+        });
 
         gameListing = new ComboBox<>();
         gameListing.setItems(gameList);
