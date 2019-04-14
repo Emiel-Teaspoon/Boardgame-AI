@@ -79,7 +79,7 @@ public class ConnectionHandler {
     }
 
     public boolean acceptChallenge(String number) {
-        return connection.request("challenge accept " + number);
+        return connection.request("accept " + number);
     }
 
     public void help(String command) {
