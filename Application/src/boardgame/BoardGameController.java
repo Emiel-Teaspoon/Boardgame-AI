@@ -44,9 +44,9 @@ public class BoardGameController {
     public void loadAvailableGames() {
         // TODO: change to server input
         if (games.get("Reversi") == null) {
-            games.put("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
+            //games.put("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
         } else {
-            games.replace("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
+            //games.replace("Reversi", new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
         }
     }
 
