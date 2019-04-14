@@ -2,7 +2,9 @@ package client.handlers;
 
 import client.ClientModel;
 
+import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SettingsHandler {
 
@@ -16,6 +18,7 @@ public class SettingsHandler {
 
     public HashMap<String, String> getSettings() {
         // TODO: Read from file
+        loadSettings();
         // If file doesn't exist return defaultSettings;
 
         if (settings == null) {
@@ -32,6 +35,7 @@ public class SettingsHandler {
     }
 
     public void updateSettings(HashMap<String, String> newSettings) {
+        loadSettings();
         System.out.println("Updating settings\n Current settings = " + settings.toString());
 
         for (String key : newSettings.keySet()) {
@@ -41,5 +45,35 @@ public class SettingsHandler {
 
         System.out.println("New Settings = " + settings.toString());
         // TODO: Write settings to file
+        saveSettings();
+    }
+
+    public void saveSettings(){
+        File settingsFile = new File("settings.ser");
+        try {
+            ObjectOutputStream settingsOut = new ObjectOutputStream(new FileOutputStream(settingsFile));
+            settingsOut.writeObject(settings);
+            settingsOut.close();
+        }catch(IOException ex){
+            System.out.println(ex.toString());
+            System.out.println("Bestand is niet opgeslagen");
+        }
+    }
+
+    public void loadSettings(){
+        //TODO: clean up
+        try
+        {
+            ObjectInputStream settingsIn = new ObjectInputStream(new FileInputStream("settings.ser"));
+            settings = (HashMap) settingsIn.readObject();
+            settingsIn.close();
+        }catch(IOException ioe)
+        {
+            System.out.println(ioe.toString());
+            System.out.println("Bestand is niet gevonden");
+        }catch(ClassNotFoundException c)
+        {
+            System.out.println(c.toString());
+        }
     }
 }
