@@ -17,7 +17,6 @@ public class SettingsHandler {
     }
 
     public HashMap<String, String> getSettings() {
-        // TODO: Read from file
         loadSettings();
         // If file doesn't exist return defaultSettings;
 
@@ -32,6 +31,7 @@ public class SettingsHandler {
         settings.put("name", "Naam");
         settings.put("host", "localhost");
         settings.put("port", "7789");
+        saveSettings();
     }
 
     public void updateSettings(HashMap<String, String> newSettings) {
@@ -44,7 +44,6 @@ public class SettingsHandler {
         }
 
         System.out.println("New Settings = " + settings.toString());
-        // TODO: Write settings to file
         saveSettings();
     }
 
@@ -61,7 +60,6 @@ public class SettingsHandler {
     }
 
     public void loadSettings(){
-        //TODO: clean up
         try
         {
             ObjectInputStream settingsIn = new ObjectInputStream(new FileInputStream("settings.ser"));
