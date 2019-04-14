@@ -7,6 +7,7 @@ public class Player {
     private int score;
     private Color color;
     private boolean isPlayable;
+    private boolean hasMove;
 
     public Player(Color color, boolean isPlayable) {
         this.color = color;
@@ -35,5 +36,13 @@ public class Player {
 
     public void setPlayable(boolean playable) {
         isPlayable = playable;
+    }
+
+    public void setHasMove(boolean hasMove) {
+        this.hasMove = hasMove;
+    }
+
+    public boolean hasMove() {
+        return hasMove;
     }
 }

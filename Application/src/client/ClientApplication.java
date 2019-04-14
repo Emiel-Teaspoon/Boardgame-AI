@@ -16,9 +16,7 @@ public class ClientApplication extends Application {
     }
 
     public void setScene(Scene scene) {
-        Platform.runLater(() -> {
-            stage.setScene(scene);
-        });
+        Platform.runLater(() -> stage.setScene(scene));
     }
 
     @Override

@@ -103,7 +103,6 @@ public class ClientModel {
             case "YOURTURN":
                 //TODO: Add better check;
                 //if (gameModel != null) gameModel.getCurrentGame().message(message);
-                reversiGame.setCurrentPlayer((ReversiPlayer) reversiGame.player1, true);
                 break;
             default:
                 break;
@@ -122,7 +121,7 @@ public class ClientModel {
 
         //Game newGame = new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
 
-        reversiGame = new Reversi(new ReversiAI(Player.Color.WHITE, true), new ReversiPlayer(Player.Color.BLACK, false), this, connectionHandler, isOpponent);
+        reversiGame = new Reversi(new ReversiAI(Player.Color.WHITE, true), new ReversiPlayer(Player.Color.BLACK, false), this, connectionHandler, isOpponent, me);
 
         gameModel = new GameModel();
         gameModel.setPlayerOne(me);

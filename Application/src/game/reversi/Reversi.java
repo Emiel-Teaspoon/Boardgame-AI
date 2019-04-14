@@ -21,6 +21,7 @@ public class Reversi extends Game {
 
     private boolean isOpponent;
     private boolean isFinished = false;
+    private String myName;
 
     private int timer = 10;
     Thread timerThread;
@@ -38,28 +39,23 @@ public class Reversi extends Game {
         board = new ReversiBoard(8, 8, this, controller);
 
         board.setPlayer(player1);
-        setCurrentPlayer(player1,true);
     }
 
-    public Reversi(ReversiPlayer player1, ReversiPlayer player2, ClientModel controller, ConnectionHandler handler, boolean isOpponent) {
+    public Reversi(ReversiPlayer player1, ReversiPlayer player2, ClientModel controller, ConnectionHandler handler, boolean isOpponent, String myName) {
         super(player1, player2);
         this.controller = controller;
         this.isOpponent = isOpponent;
+        this.connectionHandler = handler;
         scores = new HashMap<>();
         player1.setReversi(this);
         player2.setReversi(this);
 
         scores.put(player1, 2);
         scores.put(player2, 2);
+        this.myName = myName;
 
         board = new ReversiBoard(8, 8, this, controller);
-
-        player2.setPlayable(false);
-
-        board.setPlayer(isOpponent ? player1 : player2);
-        setCurrentPlayer(isOpponent ? player1 : player2, true);
-
-        this.connectionHandler = handler;
+        setCurrentPlayer(!isOpponent ? (ReversiAI) player1 : player2);
     }
 
     void startTimer() {
@@ -301,6 +297,8 @@ public class Reversi extends Game {
             }
             if(connectionHandler != null && move.getPlayer() == player1) {
                 connectionHandler.move(move.getNode().toServerInput());
+                stopTimer();
+                setCurrentPlayer((ReversiPlayer) player2);
                 System.out.println(move.getNode().toServerInput());
             }
             if (move.getPlayer() == player1) {
@@ -336,7 +334,6 @@ public class Reversi extends Game {
                     board.updateGameInfoDisplay("Zwart heeft deze beurt geen zet gedaan.");
                 }
             }
-            setCurrentPlayer(getCurrentPlayer() == player1 ? (ReversiPlayer) player2 : (ReversiPlayer) player1, true);
         } else {
             board.updateGameInfoDisplay("-----Spel geëindigd-----");
 
@@ -362,33 +359,33 @@ public class Reversi extends Game {
         switch (message.get("type")) {
             case "MOVE":
                 // Contains keys: player, move, details
-                System.out.println("MOVE");
-                System.out.println(message.get("PLAYER"));
                 String move = message.get("MOVE");
-                if(move != null) {
+                System.out.println("MOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVE " + move);
+                if(move != null && !message.get("PLAYER").equals(myName)) {
                     passMove(move, player2);
                 }
-                System.out.println(message.get("DETAILS"));
             case "WIN":
                 System.out.println(message.get("PLAYERONESCORE"));
                 System.out.println(message.get("PLAYERTWOSCORE"));
                 System.out.println(message.get("COMMENT"));
-                setFinished(true);
+//                setFinished(true);
                 break;
             case "LOSE":
                 System.out.println(message.get("PLAYERONESCORE"));
                 System.out.println(message.get("PLAYERTWOSCORE"));
                 System.out.println(message.get("COMMENT"));
-                setFinished(true);
+//                setFinished(true);
                 break;
             case "DRAW":
                 System.out.println(message.get("PLAYERONESCORE"));
                 System.out.println(message.get("PLAYERTWOSCORE"));
                 System.out.println(message.get("COMMENT"));
-                setFinished(true);
+//                setFinished(true);
                 break;
             case "YOURTURN":
-                setCurrentPlayer((ReversiPlayer) player1, true);
+                if(currentPlayer != player1) {
+                    setCurrentPlayer((ReversiAI) player1);
+                }
             default:
                 System.err.println("message not valid");
                 break;
@@ -415,6 +412,9 @@ public class Reversi extends Game {
     }
 
     public void passMove(int x, int y) {
+        if(isFinished) {
+            return;
+        }
         ReversiMove result = null;
         currentPossibleMoves = getPossibleMoves(currentPlayer);
         for (ReversiMove move : currentPossibleMoves) {
@@ -430,20 +430,26 @@ public class Reversi extends Game {
     }
 
     public void passMove(String move, Player player) {
+        if(isFinished) {
+            return;
+        }
         ReversiMove result = null;
-        currentPlayer = (ReversiPlayer) player;
-        currentPossibleMoves = getPossibleMoves(currentPlayer);
+        currentPossibleMoves = getPossibleMoves(player);
         for (ReversiMove possibleMove : currentPossibleMoves) {
             if(move.equals(possibleMove.getNode().toServerInput())) {
                 result = possibleMove;
             }
         }
 
+        if(result != null) {
+            result.setPlayer(player2);
+        }
         passMove(result);
     }
 
-    public void setCurrentPlayer(ReversiPlayer currentPlayer, boolean hard) {
-        if (this.currentPlayer != currentPlayer || hard) {
+    public void setCurrentPlayer(ReversiPlayer currentPlayer) {
+        if (this.currentPlayer != currentPlayer) {
+            this.currentPlayer = currentPlayer;
             Platform.runLater(() -> {
                 if (currentPlayer.getColor() == Player.Color.WHITE) {
                     board.updateWhiteTimer("" + timer);
@@ -451,19 +457,21 @@ public class Reversi extends Game {
                     board.updateBlackTimer("" + timer);
                 }
             });
-            startTimer();
-            this.currentPlayer = currentPlayer;
-            if (currentPlayer instanceof ReversiAI) {
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(1000);
-                        ((ReversiAI) currentPlayer).play();
-                    } catch (InterruptedException ignored) {
+            if(currentPlayer == player1) {
+                startTimer();
+                if (currentPlayer instanceof ReversiAI) {
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1000);
+                            ((ReversiAI) currentPlayer).play();
+                            stopTimer();
+                        } catch (InterruptedException ignored) {
 
-                    }
-                }).start();
-            } else {
-                board.setPlayer(currentPlayer);
+                        }
+                    }).start();
+                } else {
+                    board.setPlayer(currentPlayer);
+                }
             }
         }
     }

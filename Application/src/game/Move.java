@@ -10,6 +10,10 @@ public class Move {
         this.node = node;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public <T extends Node> Node getNode() {
         return node;
     }
