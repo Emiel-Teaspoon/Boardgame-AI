@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.GameModel;
 import game.Game;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,6 +17,7 @@ public class GameScene extends ClientScene {
     private Button btBack;
     VBox sideBar;
     Pane gameBoardLayout;
+    BorderPane layout;
 
     private GameModel gameModel;
     private String playerOne;
@@ -29,15 +31,20 @@ public class GameScene extends ClientScene {
     public void startGame(GameModel gameModel) {
         this.gameModel = gameModel;
         Game currentGame = gameModel.getCurrentGame();
-        gameBoardLayout.getChildren().add(currentGame.startGame());
+        Platform.runLater( () -> {
+            gameBoardLayout.getChildren().clear();
 
-        Label playerOneName = new Label(gameModel.getPlayerOne());
-        Label playerTwoName = new Label(gameModel.getPlayerTwo());
+            gameBoardLayout.getChildren().add(currentGame.startGame());
 
-        playerOneName.setMaxWidth(Double.MAX_VALUE);
-        playerTwoName.setMaxWidth(Double.MAX_VALUE);
+            Label playerOneName = new Label(gameModel.getPlayerOne());
+            Label playerTwoName = new Label(gameModel.getPlayerTwo());
 
-        sideBar.getChildren().addAll(playerOneName, playerTwoName, btBack);
+            playerOneName.setMaxWidth(Double.MAX_VALUE);
+            playerTwoName.setMaxWidth(Double.MAX_VALUE);
+
+            sideBar.getChildren().clear();
+            sideBar.getChildren().addAll(playerOneName, playerTwoName, btBack);
+        });
     }
 
     @Override
@@ -57,7 +64,8 @@ public class GameScene extends ClientScene {
 
     @Override
     public void buildScene() {
-        BorderPane layout = new BorderPane();
+        buildButtons();
+        layout = new BorderPane();
         layout.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         layout.setPadding(new Insets(20, 0, 20, 20));
 
@@ -78,10 +86,6 @@ public class GameScene extends ClientScene {
         layout.setCenter(gameBoardLayout);
 
         scene = new Scene(layout, 1200, 800);
-
-        buildButtons();
-        Pane pane = new Pane(btBack);
-        scene = new Scene(pane, 1080, 720);
     }
 
     private void buildButtons() {

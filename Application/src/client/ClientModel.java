@@ -23,6 +23,8 @@ public class ClientModel {
     private SettingsScene settingsScene;
     private StartScene startScene;
 
+    private Reversi reversiGame;
+
     private HashMap<String, ClientScene> scenes;
     private HashMap<String, Game> games = new HashMap<>();
     private GameModel gameModel;
@@ -84,7 +86,7 @@ public class ClientModel {
             case "MATCH":
                 // Contains keys
                 System.out.println("Match starting");
-                switchScene("game");
+                prepareGameScene(message.get("PLAYERTOMOVE"), message.get("OPPONENT"));
                 // TODO: add better check
                 //if (lobbyModel != null) lobbyModel.message(message);
                 break;
@@ -99,6 +101,8 @@ public class ClientModel {
             case "DRAW":
                 // The player lost
                 // Contains keys: playeronescore, playertwoscore, comment
+            case "YOURTURN":
+                reversiGame.handleMessage(message);
                 //TODO: Add better check;
                 //if (gameModel != null) gameModel.getCurrentGame().message(message);
                 break;
@@ -122,9 +126,11 @@ public class ClientModel {
 
         //Game newGame = new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this));
 
+        reversiGame = new Reversi(new ReversiPlayer(Player.Color.WHITE), new ReversiAI(Player.Color.BLACK), this);
+
         gameModel = new GameModel();
         gameModel.setPlayerOne(player1);
-        gameModel.setCurrentGame(games.get("Reversi"));
+        gameModel.setCurrentGame(reversiGame);
         gameModel.setPlayerTwo(player2);
 
         switchScene("game");

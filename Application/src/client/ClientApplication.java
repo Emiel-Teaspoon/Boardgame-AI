@@ -22,12 +22,9 @@ public class ClientApplication extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         stage = primaryStage;
         new ClientModel(this);
-//
-//        new Thread(new ClientModel(this)).start();
-
         stage.show();
     }
 

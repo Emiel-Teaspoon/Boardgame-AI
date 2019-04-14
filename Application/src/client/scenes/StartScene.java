@@ -14,6 +14,7 @@ import java.util.HashMap;
 public class StartScene extends ClientScene {
 
     private Button btSettings;
+    private Button btTestgame;
 
     @Override
     public void onEnter() {
@@ -63,6 +64,7 @@ public class StartScene extends ClientScene {
 
         BorderPane pane = new BorderPane();
         pane.setRight(btPlay);
+        pane.setCenter(btTestgame);
         pane.setLeft(btSettings);
         pane.setTop(tfName);
 
@@ -78,6 +80,11 @@ public class StartScene extends ClientScene {
         btPlay = new Button("Speel online");
         btPlay.setOnAction(e -> {
             play();
+        });
+
+        btTestgame = new Button("Test AI spel");
+        btTestgame.setOnAction(e -> {
+            model.prepareGameScene("henk", "ingrid");
         });
     }
 
