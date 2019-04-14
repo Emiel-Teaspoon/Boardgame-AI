@@ -23,7 +23,6 @@ public class SettingsWindow {
     private Stage settingsStage;
 
     private BoardGameController controller;
-    private SettingsModel model;
 
     private BorderPane mainLayout;
     private HBox buttonLayout;
@@ -47,9 +46,8 @@ public class SettingsWindow {
     private final static String IPRegex = IPSegment + "\\." + IPSegment + "\\." + IPSegment + "\\." + IPSegment;
     private final static Pattern IPPattern = Pattern.compile(IPRegex);
 
-    public SettingsWindow(BoardGameController controller, SettingsModel model) {
+    public SettingsWindow(BoardGameController controller) {
         this.controller = controller;
-        this.model = model;
     }
 
     public void display() {
@@ -71,10 +69,10 @@ public class SettingsWindow {
         errorText.setFill(Color.CRIMSON);
 
         IPLabel = new Label("IP adres: ");
-        IPTextField = new TextField(model.getIPAddress());
+        IPTextField = new TextField();
 
         gatewayLabel = new Label("Poort: ");
-        gatewayTextField = new TextField(String.valueOf(model.getGateway()));
+        gatewayTextField = new TextField();
 
         AICheckLabel = new Label("AI aanzetten: ");
         AICheckButton = new RadioButton();
@@ -118,23 +116,16 @@ public class SettingsWindow {
 
     private void createActionListeners() {
         backButton.setOnAction(e -> settingsStage.close());
-        settingsResetButton.setOnAction(e -> {
-            //TODO: Remove getsettingsip
-            controller.getSettingsIp();
-            IPTextField.setText(controller.getSettingsIp());
-            gatewayTextField.setText(String.valueOf(controller.getSettingsGateway()));
-        });
+        // TODO implement settings reset button
         saveButton.setOnAction(e -> {
             if (IPPattern.matcher(IPTextField.getText()).matches()) {
                 controller.updateIPAdress(IPTextField.getText());
-                controller.setSettingsIp(IPTextField.getText());
             } else {
                 errorText.setText("Een ongeldig IP adres is ingevoerd.\n");
             }
             String gateway = gatewayTextField.getText();
             if(controller.verifyGateway(gateway)) {
                 controller.updateGateway(gateway);
-                controller.setSettingsGateway(gateway);
             } else {
                 errorText.setText(errorText.getText() + "Een ongeldige poort is ingevoerd.");
             }

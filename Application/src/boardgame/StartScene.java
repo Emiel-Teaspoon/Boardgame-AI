@@ -55,7 +55,7 @@ public class StartScene {
         // Create the settings button.
         settingsButton = new Button("Instellingen aanpassen");
 
-        nameField = new TextField(controller.getSettingsName());
+        nameField = new TextField();
         nameLabel = new Label("Naam: ");
         localPlayButton = new Button("Speel lokaal");
         onlinePlayButton = new Button("Speel online");
@@ -103,7 +103,7 @@ public class StartScene {
         /**
          * Create the settings window and the action listener that takes you there.
          */
-        SettingsWindow settingsWindow = new SettingsWindow(controller, new SettingsModel());
+        SettingsWindow settingsWindow = new SettingsWindow(controller);
         settingsButton.setOnAction(e -> settingsWindow.display());
         /**
          * Create the action listener for the local play button.
@@ -112,7 +112,6 @@ public class StartScene {
         localPlayButton.setOnAction(e -> {
             if (nameField.getText().length() > 2 && nameField.getText().length() < 13) {
                 model.setName(nameField.getText());
-                controller.setSettingsName(nameField.getText());
                 // TODO add local play scene here.
                 // TODO add switch to local play scene here
                 errorText.setText("");
@@ -129,8 +128,6 @@ public class StartScene {
         onlinePlayButton.setOnAction(e -> {
             if (nameField.getText().length() > 2 && nameField.getText().length() < 13) {
                 model.setName(nameField.getText());
-                controller.setSettingsName(nameField.getText());
-                //controller.establishConnection();
                 controller.createLobbyScene();
                 controller.switchScene("LobbyScene", "Lobby");
                 errorText.setText("");
