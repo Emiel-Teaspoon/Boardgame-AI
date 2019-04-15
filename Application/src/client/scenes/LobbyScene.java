@@ -80,6 +80,12 @@ public class LobbyScene extends ClientScene {
         }
     }
 
+    private void clearChallenges() {
+        Platform.runLater( () -> {
+            challenges.clear();
+        });
+    }
+
     /**
      * Get the values of the GameList
      */
@@ -116,6 +122,9 @@ public class LobbyScene extends ClientScene {
         }
 
         updateGameList();
+        Platform.runLater(() -> {
+            gameListing.getSelectionModel().selectFirst();
+        });
         lobbyUpdater = new LobbyUpdater(this, model.getConnection());
         new Thread(lobbyUpdater).start();
     }
@@ -125,6 +134,7 @@ public class LobbyScene extends ClientScene {
         if (lobbyUpdater != null) {
             lobbyUpdater.close();
         }
+        clearChallenges();
     }
 
     private void buildButtons() {
