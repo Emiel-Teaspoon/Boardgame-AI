@@ -86,6 +86,7 @@ public class ReversiBoard extends Board implements Cloneable {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 ReversiNode node = new ReversiNode(x, y, 0);
+
                 Tile tile = new Tile(tileSize, x, y, game);
                 tile.setTranslateX(x * tileSize);
                 tile.setTranslateY(y * tileSize);
@@ -95,6 +96,18 @@ public class ReversiBoard extends Board implements Cloneable {
                 nodes.add(node);
             }
         }
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if ((x == 0 && y == 0) || (x == 0 && y == height - 1) || (x == width - 1 && y == height - 1) || (x == width - 1 && y == 0)) {
+                    ReversiNode node = getNode(x,y);
+                    for (ReversiNode neighbour : getNeighbourNodes(node)) {
+                        neighbour.setWeight(-5);
+                    }
+                    node.setWeight(10);
+                }
+            }
+        }
+
         if(game.isOpponent()) {
             getNode(3, 3).assignPlayer(game.player1);
             getNode(3, 4).assignPlayer(game.player2);

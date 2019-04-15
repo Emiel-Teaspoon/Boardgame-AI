@@ -321,18 +321,10 @@ public class Reversi extends Game {
             board.displayMove(move);
         }
         if (!isGameFinished()) {
-            if (currentPlayer == player1) {
-                if (move != null) {
-                    board.updateGameInfoDisplay("Wit heeft " + move.getActualScore() + " punten gekregen.");
-                } else {
-                    board.updateGameInfoDisplay("Wit heeft deze beurt geen zet gedaan.");
-                }
+            if (move != null) {
+                board.updateGameInfoDisplay(move.getPlayer().getColor() + "  heeft " + move.getActualScore() + " punten gekregen.");
             } else {
-                if (move != null) {
-                    board.updateGameInfoDisplay("Zwart heeft " + move.getActualScore() + " punten gekregen.");
-                } else {
-                    board.updateGameInfoDisplay("Zwart heeft deze beurt geen zet gedaan.");
-                }
+                board.updateGameInfoDisplay(currentPlayer.getColor() + " heeft deze beurt geen zet gedaan.");
             }
         } else {
             board.updateGameInfoDisplay("-----Spel geëindigd-----");
@@ -383,9 +375,9 @@ public class Reversi extends Game {
 //                setFinished(true);
                 break;
             case "YOURTURN":
-                if(currentPlayer != player1) {
+//                if(currentPlayer != player1) {
                     setCurrentPlayer((ReversiAI) player1);
-                }
+//                }
             default:
                 System.err.println("message not valid");
                 break;
