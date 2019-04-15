@@ -34,7 +34,7 @@ public class Connection implements Runnable {
         this.handler = handler;
         this.host = host;
         this.port = port;
-        this.requestTimeOut = 1000;
+        this.requestTimeOut = 10000;
         this.isConnected = false;
     }
 
@@ -141,7 +141,6 @@ public class Connection implements Runnable {
                     e.printStackTrace();
                 }
             }
-//            System.out.println(System.currentTimeMillis() - firstStartTime);
             return getString;
         } else {
             return null;

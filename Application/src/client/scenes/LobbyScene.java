@@ -150,7 +150,7 @@ public class LobbyScene extends ClientScene {
 
         btChallengePlayer = new Button("Daag speler uit");
         btChallengePlayer.setOnAction(e -> {
-            if (selectedPlayer != null) {
+            if (selectedPlayer != null && !selectedPlayer.equals(model.getSettings().get("name"))) {
                 model.getConnection().challenge(selectedPlayer,"Reversi");
             }
         });
